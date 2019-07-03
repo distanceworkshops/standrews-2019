@@ -9,9 +9,9 @@ layout: index
 This is the site for the Distance Sampling Workshops given in St Andrews, 19th - 30th August, 2019. The course is in three parts:
 
 
-- Introduction to R for Distance Sampling, 19th–20th August
-- Introduction to Distance Sampling, 21st–23rd August
-- Advanced Distance Sampling, 26th–30th August
+- Introduction to R for Distance Sampling, 19th - 20th August
+- Introduction to Distance Sampling, 21st - 23rd August
+- Advanced Distance Sampling, 26th - 30th August
 
 
 
