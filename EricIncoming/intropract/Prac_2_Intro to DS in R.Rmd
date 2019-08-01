@@ -1,0 +1,312 @@
+---
+title: Introduction to distance sampling
+author: Centre for Research into Ecological and Environmental Modelling
+subtitle: Workshop, 21-23 August 2019
+date: Exercise 2. Line transect estimation using R
+output: 
+  pdf_document:
+    number_sections: true
+fontsize: 12pt
+classoption: a4paper
+---
+```{r, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Specify whether answers are shown 
+#answer <- TRUE
+answer <- FALSE
+```
+
+In this exercise, we use `R` (R Core Team 2018) and the `Distance` package (Miller 2017, Miller \textit{et al}. 2019) to fit different detection function models to the duck nest data (introduced in Exercise 1) and estimate duck nest density and abundance.
+
+# Objectives 
+
+The aims of this exercise are to:
+
+1. Load the Distance library
+2. Import a data file
+3. Fit a basic detection function using the `ds` function
+4. Plot and examine a detection function 
+5. Assess goodness of fit of the detection function
+6. Fit different detection function forms.
+
+# Survey data 
+
+As a reminder of the survey, 20 line transects, each of length 128.75 km, were searched out to a distance of 2.4 metres (Anderson and Pospahala 1970). Perpendicular distances to detected nests have been provided in a 'csv' text file in a basic format required by 'Distance' (more on this later). The columns in the file 'IntroDS_2.1.csv' are:
+
++ Study.Area - this is the name of the study, Monte Vista NWR
++ Region.Label - identifier of regions: in this case there is only one region and it is set to 'Default'
++ Area - size of the study region (km$^2$): here the area is set to zero \footnote{The area of the refuge is 47.7 km$^2$ - this is needed to obtain abundance: for the purposes of this exercise, we are interested in fitting detection functions and density rather than abundance.}
++ Sample.Label - line transect identifier (numbered 1-20)
++ Effort - length of the line transects (km) 
++ object - unique identifier for each duck nest identified
++ distance - perpendicular distance (metres) to each duck nest.
+
+The distances allow different key functions/adjustments to be fitted in the detection function model and, by including the transect lengths and area of the region, density and abundance can be estimated. 
+
+# Getting started in R
+
+Open `RStudio` (or `R` if you prefer working in the command window only). To let `R` know where to save the `R` work space and '.Rmd' files) set your 'working directory' - from the menu along the top of the `RStudio` window click on 'Session > Set Working Directory > Choose Directory' and select your chosen directory, for example 'C:/workshop'.  
+
+# Importing the data
+
+Read the data from a file into `R` with the following command - this command assumes that the `dsdata` package has been installed on your computer. A comma-delimited file 'IntroDS_2.1.csv' is in a directory that was created when that R package was installed.
+
+```{r, echo=TRUE}
+# Import duck nest data
+nestfile <- system.file("extdata", "IntroDS_2.1.csv", package = "dsdata")
+nests <- read.csv(file=nestfile, header=TRUE)
+```
+
+To look at the first few rows of `nests` type the following command. 
+
+```{r,echo=TRUE, eval=answer}
+head(nests)
+```
+
+The object `nests` is a dataframe object made up of rows and columns. There is one row for each detected nest: use the function `nrow` to remind yourself how many detections there are:
+
+```{r, echo=TRUE, eval=answer}
+nrow(nests)
+```
+
+# Summarising the perpendicular distances
+
+Create a numerical summary of the distances:
+
+```{r, echo=TRUE, eval=answer}
+summary(nests$distance)
+```
+
+Similarly to plot a histogram of distances, the command is:
+
+```{r, echo=TRUE, eval=answer, fig.width=3.5, fig.height=3.5}
+hist(nests$distance, xlab="Distance (m)")
+```
+
+We are now going to use the `Distance` package (Miller 2017) to fit a detection function to these data. 
+
+# Using the `Distance` package
+
+First, ensure that the `Distance` package (Miller 2017) has been installed if you haven't already installed it: to do this go to the `Packages` tab and click on `Install` and in the 'Packages' box type 'Distance'. 
+
+Once installed, the package can be loaded: 
+
+```{r, echo=T, eval=F}
+# Load package
+library(Distance)
+```
+
+# Fitting a simple detection function model with `ds`
+
+Detection functions are fitted using the `ds` function and this function requires a data frame to have a column called `distance`. We have this in our `nests` data, therefore, we can simply supply the name of the data frame to the function as follows. 
+
+> A guaranteed way to produce incorrect results from your analysis is to misspecify the units distances are measured.  The `ds` function has an argument `convert.units` where the user provides a value to report density in proper units.  Providing an incorrect value will result in estimates that are out by orders of magnitude.
+
+Before fitting a model, the units of measure within the survey need to be reconciled.   We can choose the units in which duck nest density is to be reported, we choose *square kilometres*.  How to import this information to the `ds` function?  
+
+The answer is another function `convert_units`.  Arguments to this function are
+- distance_units	
+  - units of measure for perpendicular/radial distances
+- effort_units	
+  - units of measure for effort (NULL for point transects)
+- area_units	
+  - units of measure for the study area.
+
+
+```{r, echo=TRUE, eval=FALSE}
+conversion.factor <- convert_units("meter", "kilometer", "square kilometer")
+```
+
+```{r, echo=TRUE, eval=answer}
+# Fit half-normal detection function, no adjustment terms
+nest.hn <- ds(data=nests, key="hn", adjustment=NULL,
+              convert.units=conversion.factor)
+```
+
+Details about the arguments for this function:
+
++ `key="hn"`
+  - fit a half-normal key detection function
++ `adjustment=NULL` 
+  - do not include adjustment terms
++ `convert.units=0.001` 
+  - required because, for this example, the perpendicular distances are in metres and the line transect lengths are in km - this argument converts the perpendicular distance measurements from metres to km.
+
+As we have seen, on executing the `ds` command some information is provided to the screen reminding the user what model has been fitted and the associated AIC value. More information is supplied if we ask for a summary of the model as follows:
+
+```{r, echo=TRUE, eval=answer}
+# Summarise model object
+summary(nest.hn)
+```
+
+Can you match the information with the values you used in Exercise 1 - was your density estimate similar to the one obtained here?  
+
+To look at the fitted detection function, simply use the `plot` function:
+
+```{r, echo=TRUE, eval=answer, message=F, fig.width=4, fig.height=4}
+plot(nest.hn)
+```
+
+The number of bins in the histogram can be changed by specifying the `nc` argument, for example, to plot the histogram having 8 bins (as in Exercise 1) we can specify:
+
+```{r, echo=TRUE, eval=answer, message=F, fig.width=4, fig.height=4}
+plot(nest.hn, nc=8)
+```
+
+The histogram should look like the one you drew in Exercise 1. 
+
+# Goodness of fit 
+
+The usual tools for checking goodness of fit are available: the function `gof_ds` performs goodness of fits tests and plots a QQ-plot. In this command, 8 bins will be used for the chi-square goodness of fit test. 
+
+```{r, echo=TRUE, eval=answer, fig.width=4, fig.height=4}
+gof_ds(nest.hn, nc=8)
+```
+
+# Specifying different detection functions
+
+Different detection function forms and shapes, are specified by changing the `key` and `adjustment` arguments. 
+
+The different options available for `key` detection functions are:
+
++ half normal (`key="hn"`) - this is the default
++ hazard rate (`key="hr"`)
++ uniform (`key="unif"`)
+
+The different options available for adjustment terms are:
+
++ no adjustment terms (`adjustment=NULL`)
++ cosine (`adjustment="cos"`) - default
++ Hermite polynomial (`adjustment="herm"`)
++ Simple polynomial (`adjustment="poly"`)
+
+For each model specified below, note down the AIC, density and 95\% confidence interval and compare it to the model already fitted (i.e. half-normal with no adjustments). Which detection function model would you choose?
+
+To fit a uniform key function with cosine adjustment terms, use the command:
+
+```{r, echo=TRUE, eval=answer, message=FALSE}
+nest.uf.cos <- ds(nests, key="unif", adjustment="cos",
+                  convert.units=conversion.factor)
+```
+
+By default, AIC selection will be used to fit adjustment terms of up to order 5. Have any adjustment terms been selected?  
+
+To fit a hazard rate key function with Hermite polynomial adjustment terms, then use the command:
+
+```{r, echo=TRUE, eval=answer, message=FALSE}
+nest.hr.herm <- ds(nests, key="hr", adjustment="herm", 
+                  convert.units=conversion.factor)
+```
+
+# References
+
+Anderson DR and Pospahala RS (1970) Correction of bias in belt transect studies of immotile objects. The Journal of Wildlife Management 34:141-146. http://www.jstor.org/stable/3799501.
+
+Miller DL (2017) Distance: Distance Sampling Detection Function and Abundance Estimation. R package version 0.9.7. https://CRAN.R-project.org/package=Distance
+
+Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance Sampling in R. Journal of Statistical Software 89(1), 1-28. doi:10.18637/jss.v089.i01 http://doi.org/10.18637/jss.v089.i01.
+
+R Core Team (2018) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/
+
+\newpage
+
+***
+**Solution 2. Line transect estimation using R**
+
+***
+
+Import and check the data.
+
+```{r, echo=TRUE, eval=T, fig.width=4, fig.height=4}
+# Import duck nest data
+nestfile <- system.file("extdata", "IntroDS_2.1.csv", package = "dsdata")
+nests <- read.csv(file=nestfile, header=TRUE)
+# Check data OK
+head(nests, n=3)
+# How many observations (note: detections on all lines)
+nrow(nests)
+# Summary of perp distances
+summary(nests$distance)
+# Histogram 
+# Create 8 bins
+brks <- seq(from=0, to=2.4, by=0.3)
+hist(nests$distance, breaks=brks, xlab="Distance (m)",
+     main="Perpendicular distances duck nests")
+```
+
+Fit the three models using proper units of distance measure.. 
+
+The answer is another function `convert_units`.  Arguments to this function are
+- distance_units	
+  - units of measure for perpendicular/radial distances
+- effort_units	
+  - units of measure for effort (NULL for point transects)
+- area_units	
+  - units of measure for the study area.
+
+```{r, echo=T, eval=T, message=FALSE}
+# Load library
+library(Distance)
+conversion.factor <- convert_units("Meter", "Kilometer", "Square Kilometer")
+# Model 1. Half-normal with no adjustments
+nest.hn <- ds(nests, key="hn", adjustment=NULL,
+              convert.units=conversion.factor)
+# Summary
+summary(nest.hn)
+
+# Fit alternative models
+# Model 2. Uniform with cosine adjustments
+nest.uf.cos <- ds(nests, key="unif", adjustment="cos",
+                  convert.units=conversion.factor)
+# Model 3. Hazard rate with hermite polynomial adjustments
+nest.hr.herm <- ds(nests, key="hr", adjustment="herm", 
+                  convert.units=conversion.factor)
+```
+
+The goodness of fit for the basic model is shown below.
+
+```{r, echo=T, eval=T, fig.height=4, fig.width=4}
+gof_ds(nest.hn, nc=8)
+```
+
+A function useful for contrasting models is `summarize_ds_models`.  A summary table of goodness of fit statistics for all models is created below. Note the code `pander::pander`: this is used because the output from `summarize_ds_models` is formatted for latex style editors and the `pander` function prints the output in a pretty way in a document.  
+
+```{r, echo=T, eval=T}
+# Summarise gof statistics
+pander::pander(summarize_ds_models(nest.hn, nest.uf.cos, nest.hr.herm), 
+               caption="Model results for ducknest data set.")
+```
+
+The density results from all models are summarized below. 
+
+```{r, echo=F, eval=T}
+# Harvest results
+nest.tab <- data.frame(Model=1:3, DetectionFunction=c("Half-normal, no adjustments", "Uniform, cosine adjustments","Hazard rate, hermite adjustments "),AIC=rep(NA,3), Density=rep(NA,3), LowerCI=rep(NA,3),UpperCI=rep(NA,3))
+
+get.results.f <- function(fit.model) {   return(c(AIC=summary(fit.model$ddf)$aic,
+         D=fit.model$dht$individuals$D$Estimate,
+         lCL=fit.model$dht$individuals$D$lcl,
+         uCL=fit.model$dht$individuals$D$ucl))
+}
+
+nest.tab[1,3:6] <- get.results.f(nest.hn)
+nest.tab[2,3:6] <- get.results.f(nest.uf.cos)
+nest.tab[3,3:6] <- get.results.f(nest.hr.herm)
+
+# Print results
+pander::pander(nest.tab)
+```
+
+The detection function plots are shown below. 
+
+```{r, echo=T, eval=T, fig.width=6, fig.height=6}
+# Divide the plot window
+par(mfrow=c(2,2))
+# Plot detection functions
+plot(nest.hn, nc=8, main="Half normal, no adj.")
+plot(nest.uf.cos, nc=8, main="Uniform, cosine adj.")
+plot(nest.hr.herm, nc=8, main="Hazard rate, hermite adj.")
+```
+
+The half-normal detection function with no adjustments has the smallest AIC which provides support for this model. The $\Delta$AIC values for all three models is small. In general, you should get similar density estimates using different detection function models, provided those models fit the data well, as in this example.

@@ -1,0 +1,395 @@
+---
+title: Introduction to distance sampling
+author: Centre for Research into Ecological and Environmental Modelling
+subtitle: Workshop, 21-23 August 2019
+date: Exercise 3 Assessing line transect detection functions
+output: 
+  pdf_document:
+    number_sections: true
+fontsize: 12pt
+classoption: a4paper
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Specify whether answers are shown 
+#answer <- TRUE
+answer <- FALSE
+```
+
+In Exercise 2, we fitted different detection functions and compared them in terms of goodness of fit and AIC. Here, we continue to fit and assess different models and look at additional arguments in the `ds` package.  
+
+# Objectives 
+
+The aim of this exercise is to practise fitting and assessing different line transect detection functions and in particular to:
+
+1. Understand the data format when there are no detections on a line,
+2. Explore different truncation options,
+3. Determine whether adjustment terms are required,
+4. Practice model selection,
+
+# Fitting models to simulated data
+
+The data used for this practical were generated from a half-normal distribution and therefore the true density is known. There are 12 transects.
+
+The data are stored in a file called 'IntroDS_3.1.csv' (in the `data` directory) which contains the following columns:
+
++ Study.Area - Name of study called (not very imaginatively) 'LTExercise3'
++ Region.Label - identifier of regions (in this case there is only one region and it is set to 'Default')
++ Area - size of the study region (km$^2$)
++ Sample.Label - line transect identifier (Line 1 - Line 12)
++ Effort - length of the line transects (km) 
++ object - unique identifier to each detected object
++ distance - perpendicular distances (metres).
+
+## Importing the data
+
+If you have started a new `R` session, then you will need to load the `Distance` package again, otherwise, you can skip this command and move straight to importing the new data file.  
+
+```{r, echo=TRUE, eval=FALSE}
+# Load library (if not already loaded)
+library(Distance)
+# Import data
+ltsimdata <- system.file("extdata", "IntroDS_3.1.csv", package = "dsdata")
+ltdat <- read.csv(ltsimdata, header=TRUE)
+# Check that it has been imported correctly
+head(ltdat, n=3)
+```
+
+### Data format: no detections on a transect
+
+Before fitting models, it is worth investigating the data a bit further: let's start by summarising the perpendicular distances:
+
+```{r, echo=TRUE, eval=FALSE}
+# Summary of perpendicular distances
+summary(ltdat$distance)
+```
+
+The summary indicates that the minimum distance is `min(hndat$distance)` and the maximum is `max(hndat$distance)` metres and there is one missing value (indicated by the `NA`). If we print a few rows of the data, we can see that this missing value occurred on transect 'Line 11'. 
+
+```{r, echo=TRUE, eval=FALSE}
+# Print out a few lines of data
+ltdat[100:102, ]
+```
+
+The `NA` indicates that there were no detections on this transect, but the transect information needs to be included otherwise the number of transects and the total line length will be incorrect. 
+
+## Truncation
+
+Let's start by fitting a basic model, i.e. no adjustment terms (by default a half normal model is fitted). 
+
+For this project, perpendicular distances are in metres and the transect lines are recorded in kilometres.
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE}
+conversion.factor <- convert_units("meter", "kilometer", "square kilometer")
+# Fit half normal, no adjustments
+lt.hn <- ds(data=ltdat, key="hn", adjustment=NULL,
+            convert.units=conversion.factor)
+```
+
+Looking at a summary of the model object, how many objects are there in total? What is the maximum observed perpendicular distance?
+
+```{r, echo=TRUE, eval=FALSE}
+# Print a summary of the fitted detection function
+summary(lt.hn)
+```
+
+Plot the detection function and specify many histogram bins:
+
+```{r, echo=TRUE, eval=FALSE, fig.height=4, fig.width=4}
+plot(lt.hn, nc=30)
+```
+
+The histogram indicates that there is a large gap in detections therefore, to avoid a long right hand tail in the detection function, truncation is necessary. There are several ways to truncate: excluding distances beyond some specified distance or excluding a specified percentage of the largest distances. Note that here we only consider excluding large perpendicular distances, which is frequently referred to as right truncation.  
+
+### Truncation at a fixed distance
+
+The following command truncates the perpendicular distances at 20 metres i.e. objects detected beyond 20 m are excluded. 
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE}
+# Truncate at 20metres
+lt.hn.t20m <- ds(data=ltdat, key="hn", adjustment=NULL, truncation=20,
+                 convert.units=conversion.factor)
+```
+
+Generate a summary and plot of the detection function to see what effect this truncation has had on the number of objects.  
+
+```{r, echo=answer, eval=answer, fig.height=4, fig.width=4}
+# Generate a summary 
+summary(lt.hn.t20m)
+# Plot detection function
+plot(lt.hn.t20m)
+```
+
+### Truncating a percentage of distances
+
+An alternative way to truncate distances is to specify a percentage of detected objects that should be excluded. In the command below, 10\% of the largest distances are excluded. 
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE}
+# Truncate largest 10% of distances
+lt.hn.t10per <- ds(data=ltdat, key="hn", adjustment=NULL, truncation="10%",
+                   convert.units=conversion.factor)
+```
+
+Again, generate a summary and plot to see what effect this has had.  
+
+```{r, echo=TRUE, eval=FALSE, fig.height=4, fig.width=4}
+summary(lt.hn.t10per)
+plot(lt.hn.t10per)
+```
+
+## Exploring different models
+
+Decide on a suitable truncation distance (but don't spend too long on this) and then fit different key detection functions and adjustment terms to assess whether these data can be satisfactorily analysed with the 'wrong' model. By default, the `ds` function fits a half normal function and  cosine adjustment terms (`adjustment="cos"`) of up to order 5: AIC is used to determine how many, if any, adjustment terms are required. This model is specified in the command below: 
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE}
+# Half normal detection, cosine adjustments, no truncation
+lt.hn.cos <- ds(data=ltdat, key="hn", adjustment="cos",
+                convert.units=conversion.factor)
+```
+
+Change the key and adjustment terms: possible options are listed in Exercise 2 or use the `help(ds)` for options. See how the bias and precision compare between the models: the true density was 79.8 animals per km$^2$. 
+
+# Fitting models to real data (optional question)
+
+* The objective of this portion of the exercise is to give you more practice with a line transect data set and also familiarise you with converting from exact distances to binned distances.
+
+The data stored in a text file called 'IntroDS_3.2.csv' were collected during a line transect survey of capercaillie (a species of large grouse) in Scotland. The data consist of:
+
++ Region.Label - name of the region
++ Area - size of region (hectares\footnote{1 hectare = 100m $\times$ 100m})
++ Sample.Label - line transect identifier (one transect)
++ Effort - length of line (km)
++ object - unique identifier for each group detected 
++ distance - perpendicular distance to each group (metres)
++ size - group size (in this case only single birds were detected)
+
+Import these data and:
+
+1. Decide on a suitable truncation distance, if any,
+2. Fit a few different key detection functions and adjustment terms
+3. Compare the AIC values and qq plots and choose a model
+4. Calculate density for your chosen model. To obtain density in birds per hectare, the conversion units should be specified as `convert.units=0.1`. 
+
+## Converting exact distances to binned distances
+
+Sometimes we wish to convert exact distances to binned distances, if for example, there is evidence of rounding to favoured values. To do this in `ds` we need to specify the cutpoints of the bins, including zero and the maximum distance. In the example below, cutpoints at 0, 10, 20, ..., 80 are specified. 
+
+```{r, echo=TRUE, eval=FALSE}
+# Import data
+capercaillefile <- system.file("extdata", "IntroDS_3.2.csv", package = "dsdata")
+caper <- read.csv(capercaillefile, header=TRUE)
+# Specify cutpoint for bins
+bins <- seq(from=0, to=80, by=10)
+conversion.factor <- convert_units("meter", "kilometer", "hectare")
+# Specify model with binned distances
+caper.bin <- ds(data=caper, key="hn", cutpoints=bins, 
+                convert.units=conversion.factor)
+# Plot
+plot(caper.bin)
+```
+
+\newpage
+
+***
+**Solution 3. Assessing line transect detection functions**
+
+***
+
+# Fitting models to simulated data
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+# Load library 
+library(Distance)
+# Import data
+ltsimdata <- system.file("extdata", "IntroDS_3.1.csv", package = "dsdata")
+ltdat <- read.csv(ltsimdata, header=TRUE)
+# Check that it has been imported correctly
+head(ltdat, n=3)
+# How many observations (remember no detections on line 11)
+max(ltdat$object, na.rm=TRUE)
+```
+
+These data contain 105 observations. There were no detections on Line 11 and the format below indicates that `NA` is used to specify this. 
+
+```{r}
+ltdat[100:102, ]
+```
+
+Here we can see the effect of the different truncation options.
+
+```{r, message=FALSE}
+conversion.factor <- convert_units("meter", "kilometer", "square kilometer")
+# Truncate at 20metres
+lt.hn.t20m <- ds(data=ltdat, key="hn", adjustment=NULL, truncation=20, 
+                convert.units=conversion.factor)
+summary(lt.hn.t20m)
+```
+
+This has excluded 2 observations. 
+
+```{r, message=FALSE}
+# Truncate 10% of largest distances
+lt.hn.t10per <- ds(data=ltdat, key="hn", adjustment=NULL, truncation="10%", 
+                convert.units=conversion.factor)
+summary(lt.hn.t10per)
+```
+
+This has excluded 11 observations. The plots are shown below.
+
+```{r, echo=TRUE, eval=TRUE}
+# Divide plot window
+par(mfrow=c(1,2))
+plot(lt.hn.t20m, main="Truncation 20m")
+plot(lt.hn.t10per, main="Truncation 10%")
+```
+
+A few different models are shown below.  
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+# Fit a few different models
+# Half normal model, no adjustments, no truncation
+lt.hn <- ds(data=ltdat, key="hn", adjustment=NULL, convert.units=conversion.factor)
+# Half normal model, cosine adjustments, truncation at 20m
+lt.hn.cos.t20m <- ds(data=ltdat, key="hn", adjustment="cos", truncation=20, 
+                     convert.units=conversion.factor)
+# Uniform model, cosine adjustments, truncation at 20m
+lt.uf.cos.t20m <- ds(data=ltdat, key="unif", adjustment="cos", 
+                     truncation=20, convert.units=conversion.factor)
+# Hazard rate model, no adjustments, truncation at 20m
+lt.hr.t20m <- ds(data=ltdat, key="hr", adjustment="poly", truncation=20,
+                 convert.units=conversion.factor)
+```
+
+```{r, echo=FALSE, eval=TRUE}
+# Harvest results
+lt.tab <- data.frame(DetectionFunction=c("Half-nomal","Half-nomal","Uniform","Hazard rate"), Adjustments=c("None","Cosine","Cosine","Polynomial"), Terms=c(0,0,1,0), Truncation=c(35.8,20,20,20), AIC=rep(NA,4), Pa=rep(NA,4), Density=rep(NA,4), D.CV=rep(NA,4), Lower.CI=rep(NA,4), Upper.CI=rep(NA,4))
+
+get.results.f <- function(fit.model) {   return(c(AIC=summary(fit.model$ddf)$aic,
+         Pa=fit.model$dht$individuals$average.p,
+         D=fit.model$dht$individuals$D$Estimate,
+         D.CV=fit.model$dht$individuals$D$cv,
+         lCL=fit.model$dht$individuals$D$lcl,
+         uCL=fit.model$dht$individuals$D$ucl))
+}
+
+lt.tab[1,5:10] <- get.results.f(lt.hn)
+lt.tab[2,5:10] <- get.results.f(lt.hn.cos.t20m)
+lt.tab[3,5:10] <- get.results.f(lt.uf.cos.t20m)
+lt.tab[4,5:10] <- get.results.f(lt.hr.t20m)
+```
+
+The results are shown in the table below: 'Terms' indicates the number of selected adjustment terms and 'Pa' is the estimated detection probability. 
+
+```{r, echo=FALSE, eval=TRUE}
+# Print results
+pander::pander(lt.tab, caption="Results for simulated data with differing truncation and detection functions.")
+```
+
+There is a change in $\hat P_a$ due to truncation but all the models provide very similar density results, although precision is slightly larger for the hazard rate model (because more parameters are estimated). Agreement between the estimate and the known true density is less good if you do not truncate the data, or do not truncate sufficiently. Note that the AIC values can only be compared for models with the same truncation and hence the same objects. 
+
+The take home message is that, with care, we can get reliable estimates using the wrong model (remember the data were simulated using a half normal detection function): this is useful because, in practise, the 'correct' model is never known.
+
+```{r, echo=TRUE, eval=TRUE}
+# Divide plot window
+par(mfrow=c(2,2))
+# Plot detection functions
+plot(lt.hn, main="HN, no truncation")
+plot(lt.hn.cos.t20m, main="HN, truncation at 20m")
+plot(lt.uf.cos.t20m, main="Uniform, truncation at 20m")
+plot(lt.hr.t20m, main="HR, truncation at 20m")
+```
+
+# Fitting models to real data (optional)
+
+After importing these data, a basic model is fitted and plotted to determine if truncation is required. 
+
+```{r, fig.height=4, fig.width=4, message=FALSE}
+# Import data
+capercaillefile <- system.file("extdata", "IntroDS_3.2.csv", package = "dsdata")
+caper <- read.csv(capercaillefile, header=TRUE)
+# Check data OK
+head(caper, n=3)
+conversion.factor <- convert_units("meter", "kilometer", "hectare")
+# Fit a half normal model with no adjustments and no truncation
+caper.hn <- ds(data=caper, key="hn", adjustment=NULL, 
+               convert.units=conversion.factor)
+# Plot with lots of bins, each of width 2m
+plot(caper.hn, nc=40)
+```
+
+There isn't a long tail to the detection function and so no truncation will be used. 
+
+There may be evidence of rounding to some values (e.g. 0, 30, 40, 70) however, we will ignore this at present (but address it below) and fit the three alternative key functions and use the default setting for adjustments terms (i.e. cosine up to order 5). 
+
+```{r, message=FALSE}
+# Fit different models allowing cosine adjustments if required
+# Half normal model 
+caper.hn.cos <- ds(data=caper, key="hn", adjustment="cos",
+                   convert.units=conversion.factor)
+# Hazard rate model  
+caper.hr.cos <- ds(data=caper, key="hr", adjustment="cos",
+                   convert.units=conversion.factor)
+# Uniform model  
+caper.uf.cos <- ds(data=caper, key="unif", adjustment="cos",
+                   convert.units=conversion.factor)
+```
+
+The detection functions and qq plots are shown below:
+
+```{r, echo=TRUE, eval=TRUE, results="hide"}
+# Divide plot window
+par(mfrow=c(3,2))
+par(mar=c(4,4,.2,.1))
+plot(caper.hn.cos, main="Half normal")
+gof_ds(caper.hn.cos)
+plot(caper.hr.cos, main="Hazard rate")
+gof_ds(caper.hr.cos)
+plot(caper.uf.cos, main="Uniform")
+gof_ds(caper.uf.cos)
+```
+
+Summarise the goodness of fit statistics (in a pretty format). This table indicates that the hazard rate detection function had the lowest AIC but the difference in AIC between all three models was small. 
+
+```{r}
+pander::pander(summarize_ds_models(caper.hn.cos, caper.hr.cos, caper.uf.cos),
+               caption="Summary of results of Capercaillie analysis.")
+```
+
+The results for the three different models are shown below: density is in birds per ha.  
+
+```{r, echo=FALSE, eval=TRUE}
+# Harvest results
+caper.tab <- data.frame( DetectionFunction=c("Half-nomal","Hazard rate","Uniform"), AIC=rep(NA,3), Pa=rep(NA,3), Density=rep(NA,3), D.CV=rep(NA,3), Lower.CI=rep(NA,3), Upper.CI=rep(NA,3))
+
+caper.tab[1,2:7] <- get.results.f(caper.hn.cos)
+caper.tab[2,2:7] <- get.results.f(caper.hr.cos)
+caper.tab[3,2:7] <- get.results.f(caper.uf.cos)
+
+# Print results
+pander::pander(caper.tab, caption="Capercaillie point estimates of density and associated measures of precision.")
+```
+
+These capercaillie data are reasonably well-behaved and different models that fit the data well should give similar results. 
+
+## Converting exact distances to binned distances
+
+To deal with rounding in the distance data, the exact distances can be converted into binned distances. The cutpoints need to be chosen with care so that the distance bins are sufficiently wide enough to ensure that the 'correct' perpendicular distance is in the band containing the rounded recorded value. The bin widths do not have to be equal, as shown in example here: the cutpoints are 0, 7.5, 17.5, 27.5, ..., 67.5, 80.0 m. Note, that any distances beyond the largest bin will be excluded.
+
+```{r, echo=TRUE, eval=TRUE, fig.width=3, fig.height=3, message=FALSE}
+# Specify (uneven) cutpoint for bins
+bins <- c(0, seq(from=7.5, to=67.5, by=10), 80)
+# Check bins
+bins
+# Specify model with binned distances
+caper.hn.bin <- ds(data=caper, key="hn", adjustment="cos", cutpoints=bins,
+                   convert.units=conversion.factor)
+# Plot
+plot(caper.hn.bin)
+# Summarise results
+caper.hn.bin$dht$individuals$summary
+caper.hn.bin$dht$individuals$D[1:6]
+```
+
+Note that the binning of the data results in virtually identical estimates of density (`r round(caper.hn.bin$dht$individuals$D$Estimate, 3)` birds per ha) and essentially no change in the precision of the density estimate compared with the estimates with analysis of exact distance data.
