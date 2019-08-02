@@ -18,8 +18,7 @@ This is the site for the Distance Sampling Workshops given in St Andrews, 19th -
 ## Course materials
 
 - Introduction to R for Distance Sampling
-  - [Slides](R/slides.html)
-  - [Practical session exercises and data](R/practicals.html)
+  - [R materials](R/index.html)
 - Introduction to Distance Sampling
   - [Slides](intro/slides.html)
   - [Practical session exercises and data](intro/practicals.html)
