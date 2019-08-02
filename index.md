@@ -23,11 +23,10 @@ This is the site for the Distance Sampling Workshops given in St Andrews, 19th -
 - Introduction to Distance Sampling
   - [Slides](intro/slides.html)
   - [Practical session exercises and data](intro/practicals.html)
+  - [Bibliography](intro/bibliography.html)
 - Advanced Distance Sampling
   - [Slides](adv/slides.html)
   - [Practical session exercises and data](adv/practicals.html)
-
-There is also a [bibliography](bibliography.html) listing additional useful publications.
 
 
 ## Schedule
