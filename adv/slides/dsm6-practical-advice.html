@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Practical advice</title>
+    <meta charset="utf-8">
+    <meta name="author" content="David L Miller (@millerdl)" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, inverse, center, middle
+
+# Practical advice
+
+&lt;div style="position: absolute; bottom: 15px; vertical-align: center; left: 10px"&gt;
+&lt;img src="images/02-foundation-vertical-white.png" height="200"&gt;
+&lt;/div&gt;
+
+---
+
+class: inverse, center, middle
+
+# Real survey data is messy
+
+
+---
+
+
+# Distance sampling in the Real World
+
+
+- We've talked a lot about models
+- We've also talked about assumptions
+- Our example is relatively well-behaved
+- What can we do about all the nasty real world stuff?
+
+
+---
+
+
+# Some days...
+
+
+![2 fire emoji, a computer emoji, 2 fire emoji](images/firecomputer.png)
+
+
+---
+
+# Aims
+
+
+- Here we want to cover common questions
+- Not definitive answers
+- Some guidance on where to look for answers
+
+
+---
+
+class: inverse, center, middle
+
+# What should my sample size be?
+
+---
+
+# What do we mean by "sample size"?
+
+
+- Number of animal (groups) recorded
+  - *detection function*
+- Number of segments
+  - *spatial model*
+- Number of segments with observations
+  - *spatial model*
+
+
+---
+
+class: inverse, center, middle
+
+# Re-frame
+
+---
+
+# How would we know when we have enough samples?
+
+
+- We don't
+- Heavily context-dependent
+- Go back to assumptions
+
+
+---
+
+# "How many data?"
+
+
+![](dsm6-practical-advice_files/figure-html/df-obs-1.png)&lt;!-- --&gt;
+
+
+---
+
+
+# Pilot studies and "you get what you pay for"
+
+
+- Designing surveys is hard
+- Designing surveys is essential
+
+- Better to fail one season than fail for 5, 10 years
+- Get information early, get it cheap
+  - Inform design from a pilot study
+
+
+---
+
+# Avoiding rules of thumb
+
+
+- Think about assumptions
+  - Detection function
+  - Spatial model
+- Think about design
+  - Spatial coverage
+  - Covariate coverage
+
+
+---
+
+# Spatial coverage (IWC POWER)
+
+
+&lt;img src="images/power.png", width=85%&gt;
+
+
+---
+
+
+# Covariate coverage
+
+
+![](dsm6-practical-advice_files/figure-html/coverage-1.png)&lt;!-- --&gt;
+
+---
+
+
+# Sometimes things are complicated
+
+
+- Weather has a big effect on detectability
+- Need to record during survey
+- Disambiguate between distribution/detectability
+- Potential confounding can be BAD
+
+![weather or density?](images/weather_or_density.png)
+
+
+---
+
+
+
+# Visibility during POWER 2014
+
+
+&lt;img src="images/power-weather.png" width="100%"&gt;
+
+Thanks to Hiroto Murase and co. for this data!
+
+
+---
+
+# Covariates can make a big difference!
+
+
+&lt;img src="images/covar-inout.png" width="100%"&gt;
+
+
+
+---
+
+
+# Disappointment
+
+
+- Sometimes you don't have enough data
+- Or, enough coverage
+- Or, the right covariates
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;div class="medq", align="center"&gt;Sometimes, you can't build a spatial model&lt;/div&gt;
+
+
+---
+
+class: inverse, center, middle
+
+&lt;img src="images/kitabet_2016-Nov-22.jpg" width="100%"&gt;
+
+[@kitabet](http://twitter.com/kitabet)
+
+
+---
+
+class: inverse, center, middle
+
+# "Which of options X, Y, Z is correct?"
+
+---
+
+# Alternatives problem
+
+
+- When faced with options, try them.
+- **Where** does the sensitivity lie?
+- What's **really** going on?
+- What is your **objective**?
+
+![](images/nvsmap.png)
+
+
+---
+
+class: inverse, center, middle
+
+# "How big should our segments be?"
+
+---
+
+
+# Segment size
+
+
+- If you think it's an issue test it
+- Resolution of covariates also important
+- Maybe species-/domain-dependent?
+- (Solutions on the horizon to avoid this)
+
+
+---
+
+class: inverse, center, middle
+
+# "Is our model right?"
+
+---
+
+
+# Model validation
+
+
+- Some variety of cross-validation
+- Temporal replication
+  - Leave out 1 year, fit to others, predict, assess
+- Spatial "pseudo-jackknife"
+  - Leave out every `\(n^{th}\)` segment, refit, ...
+  - (Maybe leave out 2, 3 etc...)
+
+
+---
+
+class: inverse, center, middle
+
+# Modelling philosophy
+
+
+---
+
+# Which covariates should we include?
+
+
+- Dynamic vs static variables
+- Spatial terms? Habitat models?
+
+
+
+---
+
+class: inverse, center, middle
+
+# Getting help
+
+---
+
+# Resources
+
+
+- Bibliography has pointers to these topics
+- Distance sampling Google Group
+  - Friendly, helpful, low traffic
+  - see [distancesampling.org/distancelist.html](http://distancesampling.org/distancelist.html)
+
+
+
+
+---
+
+class: inverse, center, middle
+
+# Advanced topics
+
+---
+
+class: inverse, center, middle
+
+# This is a whirlwind tour...
+
+
+---
+
+class: inverse, center, middle
+
+# ...and some of this is experimental
+
+
+---
+
+class: inverse, center, middle
+
+# Smoother zoo
+
+
+---
+
+
+# Cyclic smooths
+
+
+- What if things "wrap around"? (Time, angles, ...)
+- Match value and derivative
+- Use `bs="cc"`
+- See `?smooth.construct.cs.smooth.spec`
+
+&lt;img src="images/cyclic.png" width=50%&gt;
+
+
+---
+
+
+# Smoothing in complex regions
+
+.pull-left[
+- Edges are important
+- Whales don't live on land
+- Bad things happen when we don't account for this
+- Include boundary info in smoother 
+- `?soap`
+]
+.pull-right[
+![Example of smoothers versus the Antarctic peninsula](images/soap.png)
+]
+
+
+---
+
+# Multivariate smooths
+
+
+- Thin plate splines are *isotropic*
+- 1 unit in any direction is equal
+- Fine for space, not for other things
+
+
+---
+
+# Tensor products
+
+
+- `\(s_{x,z}(x,z) = \sum_{k_1}\sum_{k_2} \beta_k s_x(x)s_z(z)\)`
+- As many covariates as you like! (But takes time)
+- `te()` or `ti()` (instead of `s()`)
+
+![Tensor product example](images/tensor.png)
+
+
+---
+
+# Black bears like to sunbathe
+
+
+&lt;img src="images/slope-aspect.png" width=75%&gt;
+
+
+
+---
+
+# Random effects
+
+
+- normal random effects
+- exploits equivalence of random effects and splines `?gam.vcomp`
+- useful when you just have a “few” random effects
+- `?random.effects`
+
+
+---
+
+class: inverse, center, middle
+
+# Making things faster
+
+---
+
+# Parallel processing
+
+
+- Some models are very big/slow
+- Run on multiple cores
+- Use `engine="bam"`!
+- Some constraints in what you can do
+- Wood, Goude and Shaw (2015)
+
+
+---
+
+# Summary
+
+
+- Lots of complicated problems
+- Lots of potential solutions
+- (see also "other approaches" mini-lecture)
+- Need to get simple things right first
+- **Trade assumptions for data**
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"slideNumberFormat": ""
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Model checking</title>
+    <meta charset="utf-8">
+    <meta name="author" content="David L Miller (@millerdl)" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, inverse, center, middle
+
+# Model checking
+&lt;div style="position: absolute; bottom: 15px; vertical-align: center; left: 10px"&gt;
+&lt;img src="images/02-foundation-vertical-white.png" height="200"&gt;
+&lt;/div&gt;
+
+---
+
+
+
+
+
+
+class: inverse, middle, center
+
+
+## *"perhaps the most important part of applied statistical modelling"*
+
+### Simon Wood
+
+---
+
+
+# Model checking
+
+
+- Checking `\(\neq\)` validation!
+- As with detection function, checking is important
+- Want to know the model conforms to assumptions
+- What assumptions should we check?
+
+
+---
+
+# What to check
+
+
+- Convergence
+- Basis size
+- Residuals
+
+
+---
+class: inverse, middle, center
+
+# Convergence
+
+---
+
+# Convergence
+
+
+- Fitting the GAM involves an optimization
+- By default this is REstricted Maximum Likelihood (REML) score
+- Sometimes this can go wrong
+- R will warn you!
+
+
+---
+
+# A model that converges
+
+
+
+```r
+gam.check(dsm_tw_xy_depth)
+```
+
+```
+## 
+## Method: REML   Optimizer: outer newton
+## full convergence after 7 iterations.
+## Gradient range [-3.456333e-05,1.051004e-05]
+## (score 374.7249 &amp; scale 4.172176).
+## Hessian positive definite, eigenvalue range [1.179219,301.267].
+## Model rank =  39 / 39 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k'.
+## 
+##             k'   edf k-index p-value    
+## s(x,y)   29.00 11.11    0.65  &lt;2e-16 ***
+## s(Depth)  9.00  3.84    0.81    0.38    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+# A bad model
+
+
+```
+Error in while (mean(ldxx/(ldxx + ldss)) &gt; 0.4) { :
+  missing value where TRUE/FALSE needed
+In addition: Warning message:
+In sqrt(w) : NaNs produced
+Error in while (mean(ldxx/(ldxx + ldss)) &gt; 0.4) { :
+  missing value where TRUE/FALSE needed
+```
+
+This is **rare**
+
+
+---
+
+class: inverse, middle, center
+
+# The Folk Theorem of Statistical Computing
+
+
+## *"most statistical computational problems are due not to the algorithm being used but rather the model itself"*
+
+### Andrew Gelman 
+
+
+---
+class: inverse, middle, center
+
+
+# Basis size
+
+
+---
+
+# Basis size (k)
+
+
+- Set `k` per term
+- e.g. `s(x, k=10)` or `s(x, y, k=100)`
+- Penalty removes "extra" wigglyness
+  - *up to a point!*
+- (But computation is slower with bigger `k`)
+
+
+---
+
+# Checking basis size
+
+
+
+```r
+gam.check(dsm_x_tw)
+```
+
+```
+## 
+## Method: REML   Optimizer: outer newton
+## full convergence after 7 iterations.
+## Gradient range [-3.196351e-06,4.485623e-07]
+## (score 409.936 &amp; scale 6.041307).
+## Hessian positive definite, eigenvalue range [0.7645492,302.127].
+## Model rank =  10 / 10 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k'.
+## 
+##        k'  edf k-index p-value
+## s(x) 9.00 4.96    0.76    0.44
+```
+
+
+---
+
+
+# Increasing basis size
+
+
+
+```r
+dsm_x_tw_k &lt;- dsm(count~s(x, k=20), ddf.obj=df,
+                  segment.data=segs, observation.data=obs,
+                  family=tw())
+gam.check(dsm_x_tw_k)
+```
+
+```
+## 
+## Method: REML   Optimizer: outer newton
+## full convergence after 7 iterations.
+## Gradient range [-2.301263e-08,3.930695e-09]
+## (score 409.9245 &amp; scale 6.033913).
+## Hessian positive definite, eigenvalue range [0.7678456,302.0336].
+## Model rank =  20 / 20 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k'.
+## 
+##         k'   edf k-index p-value
+## s(x) 19.00  5.25    0.76    0.37
+```
+
+
+---
+
+# Sometimes basis size isn't the issue...
+
+
+- Generally, double `k` and see what happens
+- Didn't increase the EDF much here
+- Other things can cause low "`p-value`" and "`k-index`"
+- Increasing `k` can cause problems (nullspace)
+
+
+---
+
+
+# k is a maximum
+
+- Don't worry about things being too wiggly
+- `k` gives the maximum complexity
+- Penalty deals with the rest
+
+![](dsm3-model-checking_files/figure-html/plotk-1.png)&lt;!-- --&gt;
+
+
+
+---
+class: inverse, middle, center
+
+
+# Residuals
+
+---
+
+
+# What are residuals?
+
+
+- Generally residuals = observed value - fitted value
+- BUT hard to see patterns in these "raw" residuals
+- Need to standardise `\(\Rightarrow\)` **deviance residuals**
+- Residual sum of squares `\(\Rightarrow\)` linear model
+  - deviance `\(\Rightarrow\)` GAM
+- Expect these residuals `\(\sim N(0,1)\)`
+
+
+---
+
+# Residual checking
+
+
+![](dsm3-model-checking_files/figure-html/gamcheck-1.png)&lt;!-- --&gt;
+
+
+---
+
+# Shortcomings
+
+
+- `gam.check` can be helpful
+- "Resids vs. linear pred" is victim of artifacts
+- Need an alternative
+- "Randomised quanitle residuals" (*experimental*)
+  - `rqgam.check`
+  - Exactly normal residuals
+
+
+
+---
+
+# Randomised quantile residuals
+
+![](dsm3-model-checking_files/figure-html/rqgamcheck-1.png)&lt;!-- --&gt;
+
+---
+
+# Residuals vs. covariates
+
+
+![](dsm3-model-checking_files/figure-html/covar-resids-1.png)&lt;!-- --&gt;
+
+
+---
+
+# Residuals vs. covariates (boxplots)
+
+
+![](dsm3-model-checking_files/figure-html/covar-resids-boxplot-1.png)&lt;!-- --&gt;
+
+---
+
+
+# Example of "bad" plots
+
+
+![Bad residual check plot from Wood 2006](images/badgam.png)
+
+
+---
+
+# Example of "bad" plots
+
+
+![Bad residual check plot from Wood 2006](images/badgam-annotate.png)
+
+
+---
+
+# Residual checks
+
+
+- Looking for patterns (not artifacts)
+- This can be tricky
+- Need to use a mixture of techniques
+- Cycle through checks, make changes recheck
+- Each dataset is different
+
+
+---
+
+
+# Summary
+
+
+- Convergence
+  - Rarely an issue
+  - Check your thinking about the model
+- Basis size
+  - k is a maximum
+  - Double and see what happens
+- Residuals
+  - Deviance and randomised quantile
+  - check for artifacts
+- `gam.check` is your friend
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"slideNumberFormat": ""
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

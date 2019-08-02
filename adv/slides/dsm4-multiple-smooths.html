@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Multivariate smoothing, model selection</title>
+    <meta charset="utf-8">
+    <meta name="author" content="David L Miller (@millerdl)" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: title-slide, inverse, center, middle
+
+# Multivariate smoothing&lt;br/&gt;&amp;&lt;br/&gt;model selection
+&lt;div style="position: absolute; bottom: 15px; vertical-align: center; left: 10px"&gt;
+&lt;img src="images/02-foundation-vertical-white.png" height="200"&gt;
+&lt;/div&gt;
+
+---
+
+
+
+
+
+
+
+
+# Recap
+
+
+- How GAMs work
+- How to include detection info
+- Simple spatial-only models
+- How to check those models
+
+
+---
+class: inverse, middle, center
+
+# Univariate models are fun, but...
+
+---
+
+
+# Ecology is not univariate
+
+
+- Many variables affect distribution
+- Want to model the **right** ones
+- Select between possible models
+  - Smooth term selection
+  - Response distribution
+- Large literature on model selection
+
+---
+class: inverse, middle, center
+
+# Models with multiple smooths
+
+---
+
+# Adding smooths
+
+
+- Already know that `+` is our friend
+- Can build a big model...
+
+
+```r
+dsm_all &lt;- dsm(count~s(x, y) +
+                     s(Depth) +
+                     s(DistToCAS) +
+                     s(SST) +
+                     s(EKE) +
+                     s(NPP),
+                  ddf.obj=df_hr,
+                  segment.data=segs, observation.data=obs,
+                  family=tw())
+```
+
+---
+class: inverse, middle, center
+
+# Now we have a huge model, what do we do?
+
+---
+
+# Term selection
+
+
+.pull-left[
+- Two popular approaches (use `\(p\)`-values)
+
+**Stepwise selection** - path dependence
+
+**All possible subsets** - computationally expensive (fishing?)
+]
+.pull-right[
+&lt;img src="images/gnome.jpg"&gt;
+]
+
+---
+
+# p-values
+
+- Test for *zero effect* of a smooth
+- They are **approximate** for GAMs (but useful)
+- Reported in `summary`
+
+---
+
+# p-values example
+
+
+```
+## 
+## Family: Tweedie(p=1.25) 
+## Link function: log 
+## 
+## Formula:
+## count ~ s(x, y) + s(Depth) + s(DistToCAS) + s(SST) + s(EKE) + 
+##     s(NPP) + offset(off.set)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -20.6369     0.2752     -75   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Approximate significance of smooth terms:
+##                edf Ref.df     F p-value    
+## s(x,y)       5.236  7.169 1.233  0.2928    
+## s(Depth)     3.568  4.439 6.640 1.6e-05 ***
+## s(DistToCAS) 1.000  1.000 1.503  0.2205    
+## s(SST)       5.927  6.987 2.067  0.0407 *  
+## s(EKE)       1.763  2.225 2.577  0.0696 .  
+## s(NPP)       2.393  3.068 0.855  0.4680    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## R-sq.(adj) =  0.224   Deviance explained = 44.9%
+## -REML = 368.97  Scale est. = 3.9334    n = 949
+```
+
+---
+
+class: inverse, middle, center
+
+# Path dependence is an issue here
+
+---
+
+# Term selection during fitting
+
+
+
+.pull-left[
+- Penalty already removes complexity from model
+- What about using it to remove the whole term?
+]
+.pull-right[
+![animation of penalty in action](images/shrinky_dink.gif)
+]
+
+
+---
+
+# Shrinkage approach
+
+
+
+.pull-left[
+- Basis `s(..., bs="ts")` - thin plate splines *with shrinkage*
+- remove the wiggles **then** remove the "linear" bits
+- nullspace should be shrunk less than the wiggly part
+]
+.pull-right[
+![animation of penalty in action](images/shrinky_dink_ts.gif)
+]
+
+
+
+---
+
+# Shrinkage example
+
+
+```r
+dsm_ts_all &lt;- dsm(count~s(x, y, bs="ts") +
+                        s(Depth, bs="ts") +
+                        s(DistToCAS, bs="ts") +
+                        s(SST, bs="ts") +
+                        s(EKE, bs="ts") +
+                        s(NPP, bs="ts"),
+                  ddf.obj=df_hr,
+                  segment.data=segs, observation.data=obs,
+                  family=tw())
+```
+
+---
+
+# Model with no shrinkage
+
+
+![](dsm4-multiple-smooths_files/figure-html/smooth-no-shrinkage-1.png)&lt;!-- --&gt;
+---
+
+# ... with shrinkage
+
+![](dsm4-multiple-smooths_files/figure-html/smooth-shrinkage-1.png)&lt;!-- --&gt;
+
+---
+
+# Shrinkage in action
+
+
+```r
+summary(dsm_ts_all)
+```
+
+```
+## 
+## Family: Tweedie(p=1.277) 
+## Link function: log 
+## 
+## Formula:
+## count ~ s(x, y, bs = "ts") + s(Depth, bs = "ts") + s(DistToCAS, 
+##     bs = "ts") + s(SST, bs = "ts") + s(EKE, bs = "ts") + s(NPP, 
+##     bs = "ts") + offset(off.set)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -20.260      0.234  -86.59   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Approximate significance of smooth terms:
+##                    edf Ref.df     F  p-value    
+## s(x,y)       1.8875209     29 0.705 3.56e-06 ***
+## s(Depth)     3.6794182      9 4.811 2.15e-10 ***
+## s(DistToCAS) 0.0000934      9 0.000   0.6797    
+## s(SST)       0.3826654      9 0.063   0.2160    
+## s(EKE)       0.8196256      9 0.499   0.0178 *  
+## s(NPP)       0.0003570      9 0.000   0.8359    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## R-sq.(adj) =   0.11   Deviance explained = 35.1%
+## -REML = 385.04  Scale est. = 4.5486    n = 949
+```
+
+---
+
+# Alternative: extra penalty
+
+
+
+.pull-left[
+- `dsm(..., select=TRUE)` - extra penalty
+- no assumption of how much to shrink the nullspace
+- "no assumption" might not be such a good idea?
+]
+.pull-right[
+![animation of penalty in action](images/shrinky_dink_select.gif)
+]
+
+---
+
+# Extra penalty example
+
+
+```r
+dsm_sel &lt;- dsm(count~s(x, y) +
+                     s(Depth) +
+                     s(DistToCAS) +
+                     s(SST) +
+                     s(EKE) +
+                     s(NPP),
+                  ddf.obj=df_hr,
+                  segment.data=segs, observation.data=obs,
+                  family=tw(), select=TRUE)
+```
+
+
+---
+
+# Extra penalty example
+
+
+
+```r
+summary(dsm_sel)
+```
+
+```
+## 
+## Family: Tweedie(p=1.266) 
+## Link function: log 
+## 
+## Formula:
+## count ~ s(x, y) + s(Depth) + s(DistToCAS) + s(SST) + s(EKE) + 
+##     s(NPP) + offset(off.set)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -20.4285     0.2454  -83.23   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Approximate significance of smooth terms:
+##                    edf Ref.df     F  p-value    
+## s(x,y)       7.694e+00     29 1.272 2.67e-07 ***
+## s(Depth)     3.645e+00      9 4.005 3.24e-10 ***
+## s(DistToCAS) 1.944e-05      9 0.000   0.7038    
+## s(SST)       2.010e-04      9 0.000   0.8216    
+## s(EKE)       1.417e+00      9 0.630   0.0127 *  
+## s(NPP)       2.318e-04      9 0.000   0.5152    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## R-sq.(adj) =   0.16   Deviance explained = 40.9%
+## -REML =    378  Scale est. = 4.2252    n = 949
+```
+
+
+---
+
+# Extra penalty example
+
+![](dsm4-multiple-smooths_files/figure-html/smooth-sel-1.png)&lt;!-- --&gt;
+
+---
+
+# EDF comparison
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; allterms &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; select &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ts &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(x,y) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.2361 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.6936 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8875 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(Depth) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.5677 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.6449 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.6794 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(DistToCAS) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(SST) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.9270 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0002 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3827 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(EKE) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.7628 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.4174 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8196 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; s(NPP) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.3929 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0002 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0004 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+# Double penalty can be slow
+
+
+- Lots of smoothing parameters to estimate
+
+
+```r
+length(dsm_ts_all$sp)
+```
+
+```
+## [1] 6
+```
+
+```r
+length(dsm_sel$sp)
+```
+
+```
+## [1] 12
+```
+
+
+---
+
+# How do we select smooth terms?
+
+1. Look at EDF
+  - Terms with EDF&lt;1 may not be useful (can we remove?)
+2. Remove non-significant terms by `\(p\)`-value
+  - Decide on a significance level and use that as a rule
+
+(In some sense leaving "shrunk" terms in is more "consistent" in terms of variance estimation, but can be computationally annoying)
+
+
+---
+
+
+class: inverse, middle, center
+
+# Comparing models
+
+---
+
+# Comparing models
+
+
+- Usually have &gt;1 option
+- How can we pick?
+- Even if we have 1 model, is it any good?
+
+
+---
+
+# Nested vs. non-nested models
+
+
+- Compare `~s(x)+s(depth)` with `~s(x)`
+  - nested models
+- What about `s(x) + s(y)` vs. `s(x, y)`
+  - don't want to have all these in the model
+  - not nested models
+
+
+---
+
+# Measures of "fit"
+
+
+- Two listed in `summary`
+  - Deviance explained
+  - Adjusted `\(R^2\)` (not useful)
+- Deviance is a generalisation of `\(R^2\)`
+- Highest likelihood value (*saturated* model) minus estimated model value
+- (These are usually not very high for DSMs)
+
+
+---
+
+# AIC
+
+
+- Can get AIC from our model
+- Comparison of AIC fine (but not the end of the story)
+
+
+```r
+AIC(dsm_all)
+```
+
+```
+## [1] 1238.307
+```
+
+```r
+AIC(dsm_ts_all)
+```
+
+```
+## [1] 1225.822
+```
+
+---
+
+# A quick note about REML scores
+
+- Use REML to select the smoothness
+- Can also use the score to do model selection
+- **BUT** only compare models with the same fixed effects
+  - (i.e., same "linear terms" in the model)
+- `\(\Rightarrow\)` **All terms** must be penalised
+  - `bs="ts"` or `select=TRUE`
+
+
+---
+
+class: inverse, middle, center
+
+# Selecting between response distributions
+
+---
+
+# Goodness of fit tests
+
+
+- Q-Q plots
+- Closer to the line == better
+![](dsm4-multiple-smooths_files/figure-html/gof-qq-1.png)&lt;!-- --&gt;
+
+
+---
+
+class: inverse, middle, center
+
+# Tobler's first law of geography
+
+## *"Everything is related to everything else, but near things are more related than distant things"*
+
+### Tobler (1970)
+
+
+---
+
+# Implications of Tobler's law
+
+
+![](dsm4-multiple-smooths_files/figure-html/pairrrrs-1.png)&lt;!-- --&gt;
+
+
+---
+
+class: inverse, middle, center
+
+
+## Covariates are not only correlated (linearly)...&lt;br/&gt;&lt;br/&gt;...they are also "concurve"
+
+### *"How much can one smooth be approximated by one or more other smooths?"*
+
+
+---
+
+# Concurvity (model/smooth)
+
+
+
+```r
+concurvity(dsm_all)
+```
+
+```
+##                  para    s(x,y)  s(Depth) s(DistToCAS)    s(SST)    s(EKE)
+## worst    2.539199e-23 0.9963493 0.9836597    0.9959057 0.9772853 0.7702479
+## observed 2.539199e-23 0.9213461 0.8275679    0.9883162 0.6951997 0.6615697
+## estimate 2.539199e-23 0.7580838 0.9272203    0.9642030 0.8978412 0.4906765
+##             s(NPP)
+## worst    0.9727752
+## observed 0.8258504
+## estimate 0.8694619
+```
+
+---
+
+# Concurvity between smooths
+
+
+```r
+concurvity(dsm_all, full=FALSE)$estimate
+```
+
+```
+##                      para       s(x,y)     s(Depth) s(DistToCAS)
+## para         1.000000e+00 4.700364e-26 4.640330e-28 6.317431e-27
+## s(x,y)       8.687343e-24 1.000000e+00 9.067347e-01 9.568609e-01
+## s(Depth)     1.960563e-25 2.247389e-01 1.000000e+00 2.699392e-01
+## s(DistToCAS) 2.964353e-24 4.335154e-01 2.568123e-01 1.000000e+00
+## s(SST)       3.614289e-25 5.102860e-01 3.707617e-01 5.107111e-01
+## s(EKE)       1.283557e-24 1.220299e-01 1.527425e-01 1.205373e-01
+## s(NPP)       2.034284e-25 4.407590e-01 2.067464e-01 2.701934e-01
+##                    s(SST)       s(EKE)       s(NPP)
+## para         5.042066e-28 3.615073e-27 6.078290e-28
+## s(x,y)       7.205518e-01 3.201531e-01 6.821674e-01
+## s(Depth)     1.232244e-01 6.422005e-02 1.990567e-01
+## s(DistToCAS) 2.554027e-01 1.319306e-01 2.590227e-01
+## s(SST)       1.000000e+00 1.735256e-01 7.616800e-01
+## s(EKE)       2.410615e-01 1.000000e+00 2.787592e-01
+## s(NPP)       7.833972e-01 1.033109e-01 1.000000e+00
+```
+
+---
+
+# Visualising concurvity between terms
+
+.pull-left[
+![](dsm4-multiple-smooths_files/figure-html/concurvity-all-vis-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+- Previous matrix output visualised
+- High values (yellow) = BAD
+]
+
+
+---
+class: inverse, middle, center
+
+# Path dependence
+
+
+
+---
+
+# Sensitivity
+
+
+- General path dependency?
+- What if there are highly concurve smooths?
+- Is the model is sensitive to them?
+
+
+
+---
+
+# What can we do?
+
+
+- Fit variations excluding smooths
+  - Concurve terms that are excluded early on
+- Appendix of Winiarski et al (2014) has an example
+
+
+---
+
+
+# Sensitivity example
+
+
+- `s(Depth)` and `s(x, y)` are highly concurve (0.9067)
+- Refit removing `Depth` first
+
+
+
+```
+## # with depth
+```
+
+```
+##                       edf Ref.df            F      p-value
+## s(x,y)       1.887521e+00     29 7.053433e-01 3.564239e-06
+## s(Depth)     3.679418e+00      9 4.811277e+00 2.149915e-10
+## s(DistToCAS) 9.339573e-05      9 1.709199e-06 6.796698e-01
+## s(SST)       3.826654e-01      9 6.305406e-02 2.159885e-01
+## s(EKE)       8.196256e-01      9 4.989110e-01 1.775703e-02
+## s(NPP)       3.570476e-04      9 1.615127e-06 8.359159e-01
+```
+
+```
+## # without depth
+```
+
+```
+##                       edf Ref.df            F      p-value
+## s(x,y)       1.377758e+01     29 2.588645e+00 1.164871e-12
+## s(DistToCAS) 1.869964e-04      9 2.575100e-06 6.877802e-01
+## s(SST)       3.679648e-04      9 6.186926e-06 6.658640e-01
+## s(EKE)       8.448440e-01      9 5.669750e-01 1.050438e-02
+## s(NPP)       7.993690e-01      9 3.627747e-01 3.229658e-02
+```
+
+
+---
+
+# Comparison of spatial effects
+
+
+![](dsm4-multiple-smooths_files/figure-html/sensitivity-vis-1.png)&lt;!-- --&gt;
+
+
+---
+
+# Sensitivity example
+
+
+- Refit removing `x` and `y`...
+
+
+
+```
+## # without xy
+```
+
+```
+##                       edf Ref.df            F      p-value
+## s(DistToCAS) 0.0002587354      9 1.804557e-06 8.019754e-01
+## s(SST)       3.7878795045      9 1.401853e+00 2.951200e-03
+## s(Depth)     3.6560507550      9 4.260082e+00 3.020240e-09
+## s(EKE)       0.8089036590      9 4.616991e-01 2.181356e-02
+## s(NPP)       2.4578806949      9 1.371706e+00 1.115487e-03
+```
+
+```
+## # with xy
+```
+
+```
+##                       edf Ref.df            F      p-value
+## s(x,y)       1.887521e+00     29 7.053433e-01 3.564239e-06
+## s(Depth)     3.679418e+00      9 4.811277e+00 2.149915e-10
+## s(DistToCAS) 9.339573e-05      9 1.709199e-06 6.796698e-01
+## s(SST)       3.826654e-01      9 6.305406e-02 2.159885e-01
+## s(EKE)       8.196256e-01      9 4.989110e-01 1.775703e-02
+## s(NPP)       3.570476e-04      9 1.615127e-06 8.359159e-01
+```
+
+
+---
+
+# Comparison of depth smooths
+
+
+![](dsm4-multiple-smooths_files/figure-html/sensitivity-depth-1.png)&lt;!-- --&gt;
+
+
+---
+
+# Comparing those three models...
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Model &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; AIC &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Deviance &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `all` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1225.822 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35.10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `s(x,y)+s(EKE)+s(NPP)` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1248.172 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34.54 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `s(SST)+s(Depth)` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1228.106 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.28 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- "Full" model still explains most deviance
+- No depth model requires spatial smooth to "mop up" extra variation
+- We'll come back to this when we do prediction
+
+
+
+
+---
+class: inverse, middle, center
+
+# Recap
+
+---
+
+
+# Recap
+
+
+- Adding smooths
+- Removing smooths
+  - `\(p\)`-values
+  - shrinkage/extra penalties
+- Comparing models
+- Comparing response distributions
+- Sensitivity
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"slideNumberFormat": ""
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
