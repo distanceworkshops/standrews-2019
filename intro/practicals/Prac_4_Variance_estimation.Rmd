@@ -1,12 +1,14 @@
 ---
-title: Introduction to distance sampling
-author: Centre for Research into Ecological and Environmental Modelling
-subtitle: Workshop, 21-23 August 2019
-date: Exercise 4. Variance estimation for systematic designs
-output: 
+title: "Introduction to distance sampling"
+author: "Centre for Research into Ecological and Environmental Modelling"
+date: "Exercise 4. Variance estimation for systematic designs"
+output:
+  html_document:
+    df_print: paged
   pdf_document:
-    number_sections: true
+    number_sections: yes
 fontsize: 12pt
+subtitle: Workshop, 21-23 August 2019
 classoption: a4paper
 ---
 
@@ -18,7 +20,7 @@ In the lecture describing measures of precision, we explained that systematic su
 
 We begin with a population and survey shown below. The data used for this exercise were simulated on a computer: they are not real data. Note the characteristics for the data in Figure 1: extreme trends with very high density on short lines and very low density on long lines. Additionally, the systematic design has covered a fairly large proportion of the survey area (the covered region is shaded). These are danger signals that the usual `ds` variance estimators might not work well and a post-stratification scheme should be considered. 
 
-![An example of survey data where there is a strong trend in density. The systematically placed search strips are shaded. Axis units are in kilometres.](figures/Prac_4_Figure_1.png)
+![An example of survey data where there is a strong trend in density. The systematically placed search strips are shaded. Axis units are in kilometres.](https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_4_Figure_1.png)
 
 # Objectives
 
@@ -127,7 +129,7 @@ Note that this estimator assumes that the numbering of the transects (in this ex
 
 The simulated population shown in Figure 2 does not exhibit strong trends across the survey region, otherwise, the strip dimensions and systematic design are the same as for the previous example. These data are stored in `IntroDS_4.2.csv`. 
 
-![An example of survey data that does not exhibit a trend in density. The systematically placed search strips are shaded. Axis units are in kilometres.](figures/Prac_4_Figure_2.png)
+![An example of survey data that does not exhibit a trend in density. The systematically placed search strips are shaded. Axis units are in kilometres.](https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_4_Figure_1.png)
 
 In the code below, these data are imported into `R` and a simple detection function model is fitted. The default estimate of variance is then compared to that obtained using the 'O2' estimator (Fewster et al. 2009).  
 

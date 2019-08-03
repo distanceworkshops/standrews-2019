@@ -1,12 +1,14 @@
 ---
-title: Introduction to distance sampling
-author: Centre for Research into Ecological and Environmental Modelling
-subtitle: Workshop, 21-23 August 2019
-date: Exercise 7. Analysis of stratified data
-output: 
+title: "Introduction to distance sampling"
+author: "Centre for Research into Ecological and Environmental Modelling"
+date: "Exercise 7. Analysis of stratified data"
+output:
+  html_document:
+    df_print: paged
   pdf_document:
-    number_sections: true
+    number_sections: yes
 fontsize: 12pt
+subtitle: Workshop, 21-23 August 2019
 classoption: a4paper
 ---
 ```{r, include=FALSE, message=FALSE}
@@ -15,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F)
 
 For this exercise, we use data from a survey of Antarctic minke whales. The study region was divided into two strata (North and South) the two strata were surveyed by different vessels at the same time. The whales tend to be found in high densities against the ice edge, where they feed, and so the density in the southern stratum is typically higher than in the northern stratum (Figure 1). This is the primary reason for using a stratified survey design. It is also the reason for covering the southern stratum more intensely: in the southern stratum the transect length per unit area is more than 2.5 times that of the northern stratum.
 
-![](figures/Prac_7_Figure_1.png){width=48%}![An example of the sort of survey design used (left) and a typical whale density gradient (right). The irregular bottom border is the ice-edge. The 'stepped' black line defines the boundary between the strata; dotted lines are transects and dots are detections.](figures/Prac_7_Figure_2.png){width=42%}
+![](https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_7_Figure_1.png){width=48%}![An example of the sort of survey design used (left) and a typical whale density gradient (right). The irregular bottom border is the ice-edge. The 'stepped' black line defines the boundary between the strata; dotted lines are transects and dots are detections.](https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_7_Figure_2.png){width=42%}
 
 Figure 1. An example of the sort of survey design used and a typical whale density gradient. The irregular bottom border is the ice-edge. The 'stepped' black line defines the boundary between the strata; dotted lines are transects and dots are detections.
 

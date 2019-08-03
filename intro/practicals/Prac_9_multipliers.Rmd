@@ -1,14 +1,16 @@
 ---
-title: Introduction to distance sampling
-author: Centre for Research into Ecological and Environmental Modelling
-subtitle: Workshop, 21-23 August 2019
-date: Exercise 9. Analysis with multipliers
-output: 
+title: "Introduction to distance sampling"
+author: "Centre for Research into Ecological and Environmental Modelling"
+date: "Exercise 9. Analysis with multipliers"
+output:
+  html_document:
+    df_print: paged
   pdf_document:
-    number_sections: true
-fontsize: 12pt
-classoption: a4paper
+    number_sections: yes
 linkcolor: red
+fontsize: 12pt
+subtitle: Workshop, 21-23 August 2019
+classoption: a4paper
 ---
 ```{r, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -38,7 +40,7 @@ Hence, we use distance sampling to produce a pellet group density estimate, then
 Data from 9 woodlands (labelled A-H and J) were collected according to the survey design (Figure 1) but note that data from block D were not included in this exercise.
 
 ```{r montrave, echo=FALSE, fig.cap="Location of sika deer survey in southern Scotland and the survey design (from Marques et al. (2001). Note the differing amounts of effort in different woodlands based on information derived from pilot surveys.", out.width = '50%'}
-knitr::include_graphics("figures/Prac_9_Figure_1.png")
+knitr::include_graphics("https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_9_Figure_1.png")
 ```
 
 In addition to these data, we also require estimates of the production rate. From a literature search, we learn that sika deer produce 25 pellet groups daily but this source did not provide a measure of variability of this estimate. During the course of our surveys we also followed the fate of some marked pellet groups to estimate the decay (disappearance) rates of a pellet group. A thorough discussion of methods useful for estimating decay rates and associated measures of precision can be found in Laing et al. (2003).

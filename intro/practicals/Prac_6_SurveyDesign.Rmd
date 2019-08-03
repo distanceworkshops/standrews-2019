@@ -371,7 +371,7 @@ My design statistics indicated I should achieve between 22 and 27 transects in t
 *Does it appear that you that there is even coverage within strata?*
 
 ```{r fig1, echo=FALSE, fig.cap="The coverage scores for each strata separately for the point transect Tentsmuir Forest survey design.", fig.height = 2, fig.align='center', fig.pos='[ht]'}
-knitr::include_graphics("figures/Prac_6_Figure_1.png")
+knitr::include_graphics("https://workshops.distancesampling.org/standrews-2019/intro/practicals/figures/Prac_6_Figure_1.png")
 ```
 
 The main strata looks to have even fairly uniform coverage. The values appear to have such small levels of variability that the variability that is seen will be down to stochasticity as it is seen across the entire strata. The Morton Lochs strata we can see has areas of lower coverage around the edge of the study region. This grid is a bit too coarse to allow us to properly judge how much of an issue edge efects will be in this strata. It may be wise to re-run the coverage simulation with a finer coverage grid and more repetitions too. Edge effects could potentially be problematic in such small areas.
