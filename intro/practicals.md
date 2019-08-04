@@ -28,7 +28,7 @@ Number | Description | Markdown | PDF
 
 ## Data sets
 
-
+Data sets are incorporated as `RData` files in the R package `dsdata`.  In addition, data for practicals 2, 3, 4, 5, and 9 are also included as comma-separated values (CSV files) in the `dsdata` package.
 
 ## Problems
 
