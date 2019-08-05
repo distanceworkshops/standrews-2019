@@ -4,11 +4,11 @@
 | Name | Institution |
 | :------- | :-------- |
 | Steve Glenn<br>Not advanced | Skagit Valley |
-| [Gail Campbell-Smith](https:\\www.internationalanimalrescue.org\orangutan-sanctuary\our-work)<br>Orangutans| Intl. Animal Rescue |
-| [Eden Zang](http:\\oceanwidescience.org\u-s-navy-acoustic-monitoring)<br>Marine acoustics<br>Not advanced | Lynker LLC |
-| Adam Miller | [Planet Indonesia](https:\\www.planetindonesia.org) |
-| [Sandra Hochscheid](http:\\www.szn.it\index.php\en\staff\list-of-personnel\286-hochscheid-sandra\489-hochscheid-sandra)<br>Mediterranean sea turtles<br>Not advanced | [Stazione Zoologia Anton Dohrn](https:\\static1.squarespace.com\static\5b80290bee1759a50e3a86b3\t\5c5229b24d7a9cd61ce11f82\1548888504778\SWOT14_20-29_Mediterranean.pdf) |
-| [Nicola Ransome](https:\\amru.org.au\group-member\nicola-ransome) | Murdoch Uni |
+| [Gail Campbell-Smith](https://www.internationalanimalrescue.org/orangutan-sanctuary/our-work)<br>Orangutans| Intl. Animal Rescue |
+| [Eden Zang](http://oceanwidescience.org/u-s-navy-acoustic-monitoring)<br>Marine acoustics<br>Not advanced | Lynker LLC |
+| Adam Miller | [Planet Indonesia](https://www.planetindonesia.org) |
+| [Sandra Hochscheid](http://www.szn.it/index.php/en/staff/list-of-personnel/286-hochscheid-sandra/489-hochscheid-sandra)<br>Mediterranean sea turtles<br>Not advanced | [Stazione Zoologia Anton Dohrn](https://static1.squarespace.com/static/5b80290bee1759a50e3a86b3/t/5c5229b24d7a9cd61ce11f82/1548888504778/SWOT14_20-29_Mediterranean.pdf) |
+| [Nicola Ransome](https://amru.org.au/group-member/nicola-ransome) | Murdoch Uni |
 
 ##### Not attending R workshop
 
