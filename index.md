@@ -41,21 +41,27 @@ The introductory distance sampling course (previously delivered in St Andrews) i
 
 Participants are encouraged to bring their own laptops to use during the workshop practicals. R will be used. To ensure your computer is setup correctly prior to the workshop please check the instructions below.
 
-### R
-
 The course will use R, RStudio and various R packages to be installed from CRAN. The following steps should setup your computer for the workshop:
 
 1. Install R from [the R website](https://cran.rstudio.com/)
 2. Install RStudio from [the RStudio website](http://www.rstudio.com/products/rstudio/download/)
-3. Open RStudio and install R packages using the following command (cut and paste into the Editor window and submit):
+3. Open RStudio and install R packages using the following commands:
 
 ```{r}
-install.packages(c("mrds", "Distance", "dsm", "DSsim", "ggplot2", "rgdal", "knitr",
-                   "plyr", "raster", "reshape2", "viridis", "htmltools",
-                   "caTools", "bitops", "rmarkdown", "tweedie", "shapefiles"))
+# install necessary packages from CRAN
+install.packages(c("mrds", "Distance", "dsm", "DSsim", "ggplot2", "rgdal",
+                   "knitr", "plyr", "raster", "reshape2", "viridis",
+                   "bitops", "rmarkdown", "tweedie", "shapefiles", "remotes"))
+
+# install newer versions of the Distance packages from
+# github
+remotes::install_github("DistanceDevelopment/mrds", type="CRAN")
+remotes::install_github("DistanceDevelopment/Distance", type="CRAN")
+remotes::install_github("DistanceDevelopment/dsm", type="CRAN")
+remotes::install_github("DistanceDevelopment/dsdata", type="CRAN")
 ```
 
-There may be quite a lot of packages downloaded in this process, including many not listed here because the packages listed depend upon many other packages.
+There may be quite a lot of packages downloaded in this process, including many not listed here because the packages listed depend upon many other packages. It's best to run these one at a time, in case R needs confirmation between steps.
 
 
 
