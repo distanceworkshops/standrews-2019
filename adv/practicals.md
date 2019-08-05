@@ -23,7 +23,7 @@ Number | Practical Description                            | Practical           
 5      | Multiple term DSMs, model checking and selection | [Rmd](practicals/05-advanced-dsms.Rmd)       [PDF](practicals/05-advanced-dsms.pdf)       | [Rmd](practicals/05-advanced-dsms-solutions.Rmd)       [PDF](practicals/05-advanced-dsms-solutions.pdf)       |
 6      | DSM Prediction                                   | [Rmd](practicals/06-prediction.Rmd)          [PDF](practicals/06-prediction.pdf)          | [Rmd](practicals/06-prediction-solutions.Rmd)          [PDF](practicals/06-prediction-solutions.pdf)          |
 7      | DSM Variance                                     | [Rmd](practicals/07-variance.Rmd)            [PDF](practicals/07-variance.pdf)            | [Rmd](practicals/07-variance-solutions.Rmd)            [PDF](practicals/07-variance-solutions.pdf)            |
-8      | Mark-recapture distance sampling                 | [Rmd](practicals/08-mrds-in-R.Rmd) [R PDF](practicals/08-mrds-in-R.pdf) [Distance PDF](practicals/08-mrds_in_Distance.pdf) | [PDF](practicals/08-mrds_solution.pdf) |
+8      | Mark-recapture distance sampling                 | [Rmd](practicals/08-mrds.Rmd) [R PDF](practicals/08-mrds.pdf)                   | [Rmd](practicals/08-mrds_solutions.Rmd) [PDF](practicals/08-mrds_solutions.pdf) |
 9      | Simulation of distance sampling data             | [Rmd](practicals/09-DSsim.Rmd) [PDF](practicals/09-DSsim.pdf)                              |  |
 
 ## Data sets
@@ -57,12 +57,11 @@ For Distance for Windows users, project files can be downloaded here:
 
 ### Data for simulation (Practical 9)
 
-[zip archive](practicals/simulation_exercise.zip) of R practical materials.
+[zip archive](practicals/Distance_simulation_exercise.zip) of R practical materials.
 
-[Distance 7 projects](practicals/DSsim_distance_projects.zip) (`DSsimExercise` and `DSsimExerciseSolutions`).
 
 ## Problems
 
-If you run into a problem running any of these examples, please report [an issue on this GitHub repository](https://github.com/distanceworkshops/stand-intermed-2018/issues). Or contact the workshop instructors.
+If you run into a problem running any of these examples, please report [an issue on this GitHub repository](https://github.com/distanceworkshops/standrews-2019/issues). Or contact the workshop instructors.
 
 
