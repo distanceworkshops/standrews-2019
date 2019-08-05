@@ -14,9 +14,9 @@
 
 | Name | Institution |
 | :------- | :-------- |
-| [Rachel Richardson](https:\\www.usgs.gov\staff-profiles\rachel-m-richardson?qt-staff_profile_science_products=0#qt-staff_profile_science_products)<br>boreal birds | USGS |
-| [Melissa Costagliola-Ray](https:\\eri.ac.uk\members\melissa-costagliola-ray)<br>seabirds, vantage points | Univ Highlands Islands -ERI |
-| [Carly Benjamin](http:\\oekoklimatologie.wzw.tum.de\index.php?id=265&L=1)<br>Ungulates | Munchen Ecoclimatology |
-| [Zack Delisle](https:\\ag.purdue.edu\fnr\Pages\profile.aspx?strAlias=zdelisle&intDirDeptID=15)<br>Deer | Purdue Univ |
+| [Rachel Richardson](https://www.usgs.gov/staff-profiles/rachel-m-richardson?qt-staff_profile_science_products=0#qt-staff_profile_science_products)<br>boreal birds | USGS |
+| [Melissa Costagliola-Ray](https://eri.ac.uk/members/melissa-costagliola-ray)<br>seabirds, vantage points | Univ Highlands Islands -ERI |
+| [Carly Benjamin](http://oekoklimatologie.wzw.tum.de/index.php?id=265&L=1)<br>Ungulates | Munchen Ecoclimatology |
+| [Zack Delisle](https://ag.purdue.edu/fnr/Pages/profile.aspx?strAlias=zdelisle&intDirDeptID=15)<br>Deer | Purdue Univ |
 | Rich Guenzel<br>Not advanced | Wyoming F&G |
-| [Megumi Takahashi](https:\\www.icrwhale.org\pdf\TEREP00177-79.pdf)  | ICR |
+| [Megumi Takahashi](https://www.icrwhale.org/pdf/TEREP00177-79.pdf)  | ICR |
