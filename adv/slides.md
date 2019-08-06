@@ -20,7 +20,7 @@ Multivariate smoothing, model selection                 |  [HTML](slides/dsm4-mu
 DSM predictions and variance                            |  [HTML](slides/dsm5-prediction-variance.html) |                                        |[Rmd](slides/dsm5-prediction-variance.Rmd)
 DSM practical advice and advanced topics                |  [HTML](slides/dsm6-practical-advice.html)    |                                        |[Rmd](slides/dsm6-practical-advice.Rmd)
 Estimation with incomplete detection at distance zero   |                                               | [PDF](slides/mrds1-g0.pdf)             |
-Mark-recapture distance sampling (MRDS)                 |                                               |   |
+Mark-recapture distance sampling (MRDS)                 |                                               | [PDF](slides/mrds2-MRDS_in_R.pdf)      |
 Simulation of distance sampling                         |                                               | [PDF](slides/DSsimLecture.pdf)         |
 
 
