@@ -50,8 +50,8 @@ The course will use R, RStudio and various R packages to be installed from CRAN.
 ```{r}
 # install necessary packages from CRAN
 install.packages(c("optimx", "numDeriv", "Rsolnp", "pander", "dplyr",
-                   "mrds", "Distance", "dsm", "DSsim", "ggplot2", "rgdal",
-                   "knitr", "plyr", "raster", "reshape2", "viridis",
+                   "mrds", "Distance", "dsm", "DSsim", "dssd",
+                   "ggplot2", "rgdal", "knitr", "plyr", "raster", "reshape2", "viridis",
                    "bitops", "rmarkdown", "tweedie", "shapefiles", "remotes"))
 
 # install newer versions of the Distance packages from
