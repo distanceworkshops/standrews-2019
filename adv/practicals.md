@@ -28,8 +28,6 @@ Number | Practical Description                            | Practical           
 
 ## Data sets
 
-Data for the practicals come in a variety of forms for analysis both in R and in Distance 7.
-
 ### Data for density surface modelling (Practicals 2-7)
 
 To run the sperm whale analysis you'll need to download the following files, unzip them and store the unzipped folders in the same directory as the `Rmd` files for practicals 5-10 above:
@@ -37,9 +35,7 @@ To run the sperm whale analysis you'll need to download the following files, unz
 - [Analysis.gdb](practicals/Analysis.gdb.zip)
 - [Covariates_for_Study_Area.zip](practicals/Covariates_for_Study_Area.zip)
 
-The Distance 7 project containing these data can be downloaded [from this location](practicals/spermwhale-Dist7.zip)
-
-We'd like to thank Jason Roberts of Duke University for preparing these files in ArcGIS with the [MGET Toolbox](http://mgel2011-kvm.env.duke.edu/mget/).
+We'd like to thank Jason Roberts of Duke University for preparing these files in ArcGIS with the [MGET Toolbox](https://mgel.env.duke.edu/mget/).
 
 ### Data for double platform analysis (Practical 8)
 
@@ -47,12 +43,6 @@ For R users you just need the `csv` files:
 
 - [Crabeater seals MRDS `csv`](practicals/crabbieMRDS.csv).
 - [Crabeater seals MCDS `csv`](practicals/crabbieMCDS.csv).
-
-For Distance for Windows users, project files can be downloaded here:
-
-- [Crabbie MRDS Exercise Distance project](practicals/CrabbieMRDSExercise.zip)
-- [Crabbie MCDS Exercise Distance project](practicals/CrabbieMCDSExercise.zip)
-- [Golftees Exercise Distance project](practicals/GolfteesExercise.zip)
 
 
 ### Data for simulation (Practical 9)
