@@ -30,7 +30,36 @@ This is the site for the Distance Sampling Workshops given in St Andrews, 19th -
 
 ## Schedule
 
-To come!
+### Introduction to R for Distance Sampling
+
+Day | Time | Activity
+-------|-------|--------------------------
+Monday | 08:45 | Registration open
+Monday | 09:00-17:00 | Welcome and setup<br/>Data types<br/>Using R in context<br/>Control structures
+Tuesday | 09:00-17:00 | Basic functions<br/>Plots<br/>Introduction to statistical modelling
+
+
+### Introduction to Distance Sampling
+ 
+Day | Time | Activity
+-------|-------|--------------------------
+Wednesday | 08:45 | Registration open
+Wednesday | 09:00 - 17:30 | Welcome<br/>Estimating animal abundance<br/>Distance sampling<br/>Goodness of fit<br/>Precision
+Thursday | 09:00 - 17:30 | Point transects<br/>Survey design<br/>Stratification<br/>Multiple covariate distance sampling
+Friday | 09:00 - 17:00 | Indirect methods and multipliers<br/>Field methods<br/>Wrap up
+
+
+### Advanced topics in Distance Sampling
+
+Day | Time | Activity
+-------|-------|--------------------------
+Monday | 08:45 |Registration open
+Monday | 09:00 - 17:00 | Welcome<br/>Review of distance sampling<br/>Density surface modelling
+Tuesday | 09:00 - 17:00 | Density surface modelling
+Wednesday | 09:00 - 17:00 | Density surface modelling
+Thursday | 09:00 - 17:00 | Mark-recapture distance sampling<br/>Distance sampling simulation and survey design
+Friday | 09:00 - 17:00 | Research topics<br/>Open
+
 
 ## Refresher of distance sampling concepts
 
