@@ -22,7 +22,7 @@ Number | Practical Description                            | Practical           
 5      | Multiple term DSMs, model checking and selection | [Rmd](practicals/05-advanced-dsms.Rmd)       [PDF](practicals/05-advanced-dsms.pdf)       | [Rmd](practicals/05-advanced-dsms-solutions.Rmd)       [PDF](practicals/05-advanced-dsms-solutions.pdf)       |
 6      | DSM Prediction                                   | [Rmd](practicals/06-prediction.Rmd)          [PDF](practicals/06-prediction.pdf)          | [Rmd](practicals/06-prediction-solutions.Rmd)          [PDF](practicals/06-prediction-solutions.pdf)          |
 7      | DSM Variance                                     | [Rmd](practicals/07-variance.Rmd)            [PDF](practicals/07-variance.pdf)            | [Rmd](practicals/07-variance-solutions.Rmd)            [PDF](practicals/07-variance-solutions.pdf)            |
-8      | Mark-recapture distance sampling                 | [Rmd](practicals/08-mrds.Rmd) [R PDF](practicals/08-mrds.pdf)                   | [Rmd](practicals/08-mrds_solutions.Rmd) [PDF](practicals/08-mrds_solutions.pdf) |
+8      | Mark-recapture distance sampling                 | [Rmd](practicals/08-mrds.Rmd) [PDF](practicals/08-mrds.pdf)                   | [Rmd](practicals/08-mrds_solutions.Rmd) [PDF](practicals/08-mrds_solutions.pdf) |
 9      | Simulation of distance sampling data             | [Rmd](practicals/09-DSsim.Rmd) [PDF](practicals/09-DSsim.pdf)                              |  |
 
 ## Data sets
