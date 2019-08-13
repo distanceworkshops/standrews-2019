@@ -91,7 +91,7 @@ remotes::install_github("DistanceDevelopment/dsm", type="CRAN")
 remotes::install_github("DistanceDevelopment/dsdata", type="CRAN")
 ```
 
-There may be quite a lot of packages downloaded in this process, including many not listed here because the packages listed depend upon many other packages. It's best to run these one at a time, in case R needs confirmation between steps.
+There may be quite a lot of packages downloaded in this process, including many not listed here because the packages listed depend upon many other packages. It's best to run these one line at a time, in case R needs confirmation between steps.
 
 
 
