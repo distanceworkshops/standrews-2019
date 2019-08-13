@@ -20,6 +20,6 @@ Tuesday | 09:00-17:00 | Basic functions<br/>Plots<br/>Introduction to statistica
 - dataset [`monthly_in_situ_co2_mlo.csv`](monthly_in_situ_co2_mlo.csv)
 - Solutions [Rmd](RTutorial_Solutions.Rmd) [PDF](RTutorial_Solutions.pdf)
 - [Base R cheatsheet](BaseRCheatSheet.pdf)
-- [R glossary](R_glossary.pdf)
+- [R glossary](R_glossary.pdf) ([Rmd source](R_glossary.Rmd))
 
 

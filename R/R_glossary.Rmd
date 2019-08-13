@@ -1,0 +1,172 @@
+---
+fontsize: 12pt
+title: Introduction to R for distance sampling
+author: Centre for Research into Ecological and Environmental Modelling
+subtitle: Workshop, 19-20 August 2019
+output: pdf_document
+---
+
+# Brief introduction to R
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This document is meant as a quick reference guide to some of the terms and special characters used in `R`. It is not a guide to the functions used throughout the workshops.  
+
+R (R Core Team, 2019) is a software environment for statistical computing and graphics. It is freely available and can be downloaded from https://cran.r-project.org/. There are versions for Windows and Mac users. RStudio is an interface designed to make R easier to use: it can be downloaded for free from https://www.rstudio.com/. 
+
+Users of R have developed packages to expand the basic features and capabilities of R. The main packages that will be used throughout the workshops are listed below. 
+
+## Terminology
+
+\textbf{arguments/default values} - parameters that need to be specified by the user in order to execute a function. Some arguments may have pre-specified, or default, values and so don't need to be changed unless different options are required. 
+
+\textbf{function} - collection of `R` commands to perform a particular task. Can be in-built (e.g. `mean`) or written by the user.
+
+\textbf{package} - collection of functions. A package must be installed (i.e. listed on the Packages tab) before accessing. 
+
+\textbf{Rstudio} - graphical user interface to `R`.
+
+\text{command line} -  `>` in the console panel. If R thinks that a command is not complete when return has been pressed (e.g. a bracket is missing), the `>` will change to `+` until the command is finished. 
+
+\textbf{script files} - text file used to write commands (and comments) which can then be executed (Run) from the script window using 'Run', or copied and pasted to the command line. Created by 'File > New File > R Script'. These files have the subscript xxxx.R where xxxx is the name provided by the user. 
+
+\textbf{R markdown} - format for creating documents containing text, code and output. 
+
+\textbf{R markdown files} - created by 'File > New File > R Markdown'. These files have the subscript xxxx.Rmd where xxx is the name supplied by the user. These files are 'knit' to produce a document/html/slides 
+
+\textbf{working directory} - directory specified by user and subsequently used, for example, to read files from or to save files to. 
+
+\textbf{workspace} - file containing data objects created during R session. Has filename suffix '.RData' by default, but this can be changed by user. It does not contain the R commands used to create the data objects. 
+
+## Useful commands/functions
+
+`citation()` - provides the citation for a package (e.g. `citation(package="Distance")`)
+
+`getwd()` - returns the working directory
+
+`help` function - provides details about the specified function and what arguments it requires (e.g. `help(mean)`)
+
+`library` - loads specified package (e.g. `library(Distance)`). Package must be installed.
+
+`load(".RData")` - loads workspace
+
+`ls()` - lists objects in the R workspace: also see the Environment tab
+
+`q()` - quit R session. You will be asked if you want to save your workspace. If 'yes' this will save the objects created in an R workspace. Script and R markdown files can also be saved. 
+
+`require` - similar to `library` (e.g. `require(tidyverse)`)
+
+`rm()` - deletes objects from workspace(e.g. `rm(xval)`). The command `rm(list=ls())` deletes everything - use with caution!
+
+`save.image()` - saves everything in current workspace to `.RData` file, `save.image(file="xxx.RData")` will save to `xxx.RData`
+
+`setwd` - function to set the working directory (e.g. `setwd("C:/workshop")`)
+
+## Useful menu items in RStudio
+
+Some of the basic commands in R used to navigate your directories can be performed using the menu items in RStudio. A few are listed below. 
+
+\textbf{File > New file} - this creates a new file (this could be a script file or an R markdown file
+
+\textbf{File > Open file} - opens file (this could be an `.rmd' file or a text file containing R commands)
+
+\textbf{File > Save} - saves the active file. 
+
+\textbf{Session > Set working directory > Choose directory} - sets the working directory
+
+\textbf{Session > Load workspace} - loads the chosen `.RData` file
+
+## Distance sampling packages
+
+The main packages that will be used for the introductory and advanced distance sampling workshops are:
+
+\textbf{Distance} - package for fitting detection functions and estimating abundance using distance sampling methodology (Miller \textit{et al}. 2019)
+
+\textbf{dsdata} - data from Distance for Windows projects used for workshops have been exported and packaged together. 
+
+\textbf{dsm} - implements spatial density models for distance sampling data (Miller \textit{et al}. 2019)
+
+\textbf{dssd} - survey design for distance sampling (Marshall 2019a)
+
+\textbf{DSsim} - performs simulations of distance sampling surveys (Marshall 2019b)
+
+\textbf{mrds} - mark-recapture distance sample (Laake \textit{et al}. 2019)
+
+To obtain more information about these packages use `help`, for example:
+
+`help(package="Distance")`
+
+## Special characters
+
+`+`,`-`,`*`,`/` arithmetic operators
+
+`:` as in `a:b` produces a vector from `a` to `b`, inclusive (e.g. `5:10` produces a vector 5 6 7 8 9 10)
+
+`<-`  assignment symbol (e.g. `x <- 5:10`)
+
+`[]`  used for selection (e.g. `x[1]` selects first element of a vector `x`) 
+{} - used for grouping lines of code together, for example in a function
+
+`[rows, columns]` - used for selection of a dataframe where `rows` is the criteria for selecting rows and `columns` is the criteria for selecting the columns
+
+`&` intersection, 'and' 
+
+`|` or
+
+`!` not 
+
+`<` less than
+
+`<=` less than or equal to
+
+`>` greater than
+
+`>=` greater than or equal to
+
+`==` logical equals, used in selection to compare two values
+
+`!=` not equal to 
+
+`=` used to specify values for function arguments (e.g. `ds(data=dsdat, key="hn")`)
+
+`~` notation for specifying a model as in `y ~ x` 
+
+`^` to the power of (e.g. `x^2` is $x^2$)
+
+`#` comment; any code/text after `#` on the same line is ignored 
+
+`$` used to define elements (columns/object) within an R object (e.g. data$X)
+
+`NA` represents missing values 
+
+`%` used for matrix multiplication (e.g. `x %*% y`)
+
+`pi` is $\pi$ i.e. 3.141593
+
+## Useful hints
+
+up-arrow key - recalls previous command in Console panel 
+
+R is case specific and so `A` and `a` are treated as separate objects   
+
+If a package is not listed on the 'Packages' tab, it can be installed from the CRAN Repository
+
+'Esc' - the escape key will halt execution of a command as well as using the red 'Stop' symbol on the Console tab (only displayed when a command is being executed) 
+
+## References
+
+Marshall L (2019a) dssd: Distance Sampling Survey Design. R package version 0.1.0. https://CRAN.R-project.org/package=dssd
+
+Marshall L (2019b) DSsim: Distance Sampling Simulations. R package version 1.1.4. https://CRAN.R-project.org/package=DSsim
+
+Miller DL, Rexstad E, Thomas L, Marshall L, Laake JL (2019) Distance
+Sampling in R \textit{Journal of Statistical Software} 89(1), 1-28. doi:
+10.18637/jss.v089.i01 (URL: https://doi.org/10.18637/jss.v089.i01)
+
+Miller DL, Rexstad E, Burt L, Bravington MV and Hedley S (2019) dsm: Density Surface Modelling of Distance Sampling Data. R package version 2.2.16. http://github.com/DistanceDevelopment/dsm
+
+Laake J, Borchers D, Thomas L, Miller D and Bishop J (2019) mrds: Mark-Recapture Distance Sampling. R package version 2.2.1. https://CRAN.R-project.org/package=mrds
+
+R Core Team (2019) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/
+
