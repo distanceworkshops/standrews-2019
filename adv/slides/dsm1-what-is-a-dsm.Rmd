@@ -40,21 +40,64 @@ class: title-slide, inverse, center, middle
 
 ---
 
+class: inverse, middle, center
 
 # Why model abundance spatially?
 
+---
+class: inverse, middle, center
 
-- Use non-designed surveys
-- Use environmental information
-- Maps
+# Maps
+---
 
+.pull-left[
+![](images/ak-talk.png)
+![](images/bigbears.png)
+]
+
+.pull-right[
+- Black bears in Alaska
+- Heterogeneous spatial distribution
+
+]
+
+---
+class: inverse, middle, center
+
+# Spatial decision making
+
+---
+
+.pull-left[
+![](images/block_island.png)
+![](images/plot-loon-preds.png)
+]
+
+.pull-right[
+- Block Island, Rhode Island
+- First offshore wind in the USA
+- Spatial impact assessment
+
+![](images/block-island-windfarms.png)
+]
+
+---
+
+class: inverse, middle, center
+
+# Biological insights
+
+---
+# 
+
+![](images/sperm-covs.png)
+![](images/sperm-smooths.png)
 
 ---
 
 class: inverse, middle, center
 
 # Back to Horvitz-Thompson estimation
-
 
 ---
 
@@ -250,23 +293,6 @@ class: inverse, middle, center
 # You should model that
 
 ---
-
-
-# Modelling outputs
-
-
-- Abundance and uncertainty
-  - Arbitrary areas
-  - Numeric values
-  - Maps
-  - Extrapolation (with caution!)
-- Covariate effects
-  - count/sample as function of covars
-
-
-
----
-
 
 # Modelling requirements
 
@@ -465,26 +491,6 @@ $$
 
 class: inverse, middle, center
 
-# Spatial models
-
----
-
-
-# Abundance as a function of covariates
-
-
-- Two approaches to model abundance
-- Explicit spatial models
-  - When: good coverage, fixed area
-- "Habitat" models (no explicit spatial terms)
-  - When: poorer coverage, extrapolation
-- We'll cover both approaches here
-
-
----
-
-class: inverse, middle, center
-
 # Data requirements
 
 ---
@@ -497,13 +503,48 @@ class: inverse, middle, center
   - ✅ Segment data
   - ✅ Observation data (segments 🔗 detections)
 
+---
+
+![](dsm_tables.png)
+
+---
+class: inverse, middle, center
+
+# Example data
+
+
 
 ---
 
-class: inverse, middle, center
+# Example data
 
-# Example of spatial data in QGIS
 
+<img src="images/data_ships.png">
+
+---
+
+
+# Example data
+
+
+<img src="images/observers.png">
+
+---
+
+
+# Sperm whales off the US east coast
+
+
+.pull-left[
+<img src="images/spermwhale.png" width="100%">
+]
+.pull-right[
+
+- Hang out near canyons, eat squid
+- Surveys in 2004, US east coast
+- Combination of data from 2 NOAA cruises
+- Thanks to Debi Palka (NOAA NEFSC), Lance Garrison (NOAA SEFSC) for data. Jason Roberts (Duke University) for data prep.
+]
 
 ---
 

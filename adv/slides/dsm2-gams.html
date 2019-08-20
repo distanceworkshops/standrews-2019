@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Generalized Additive Models</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="David L Miller (@millerdl)" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -37,24 +37,6 @@ class: title-slide, inverse, center, middle
 - What is smoothing?
 - How do GAMs work?
 - Fitting GAMs using `dsm`
-
----
-
-class: inverse, middle, center
-# What is a GAM?
-
-
-
----
-
-# "gam"
-
-
-1. *Collective noun used to refer to a group of whales, or rarely also of porpoises; a pod.*
-2. *(by extension) A social gathering of whalers (whaling ships).*
-
-(via Natalie Kelly, AAD. Seen in Moby Dick.)
-
 
 ---
 
@@ -118,10 +100,10 @@ where `\(\epsilon_j\)` are some errors, `\(\quad \color{red}{n_j\sim \text{count
 ![](dsm2-gams_files/figure-html/countshist-1.png)&lt;!-- --&gt;
 ]
 .pull-right[
-- Response is a count (not not always integer)
-- Often, it's mostly zero (that's complicated)
-- Want response distribution that deals with that
+- Response is a count
+- Often, it's mostly zero
 - Flexible mean-variance relationship
+- (Poisson isn't good at this)
 ]
 
 ---
@@ -177,13 +159,12 @@ where `\(\epsilon_j\)` are some errors, `\(\quad n_j\sim\)` count distribution
 
 
 .pull-left[
-![](dsm2-gams_files/figure-html/n-covar-1.png)&lt;!-- --&gt;
+![](dsm2-gams_files/figure-html/wiggles-1.png)&lt;!-- --&gt;
 ]
 .pull-right[
-- Think `\(s\)`=**smooth**
-- Want to model the covariates flexibly
-- Covariates and response not necessarily linearly related!
-- Want some wiggles
+- *Think* `\(s\)`=**smooth**
+- Want a line that is "close" to all the data
+- Balance between interpolation and "fit"
 ]
 
 
@@ -193,26 +174,7 @@ class: inverse, middle, center
 
 # What is smoothing?
 
-
-
 ---
-
-
-# Straight lines vs. interpolation
-
-
-.pull-left[
-![](dsm2-gams_files/figure-html/wiggles-1.png)&lt;!-- --&gt;
-]
-
-.pull-right[
-- Want a line that is "close" to all the data
-- Don't want interpolation -- we know there is "error"
-- Balance between interpolation and "fit"
-]
-
----
-
 
 # Splines
 
@@ -224,7 +186,6 @@ class: inverse, middle, center
 - Functions made of other, simpler functions
 - **Basis functions** `\(b_k\)`, estimate `\(\beta_k\)` 
 - `\(s(x) = \sum_{k=1}^K \beta_k b_k(x)\)`
-- Makes the maths much easier
 ]
 
 ---
@@ -233,52 +194,17 @@ class: inverse, middle, center
 
 
 - Visually:
-  - Lots of wiggles == NOT SMOOTH
-  - Straight line == VERY SMOOTH
-- How do we do this mathematically?
-  - Derivatives!
+  - Lots of wiggles `\(\Rightarrow\)` *not smooth*
+  - Straight line `\(\Rightarrow\)` *very smooth*
+  - Measure with derivatives
   - (Calculus *was* a useful class after all)
 
-
-
----
-
-
-# Wigglyness by derivatives
-
-
-
-
-![Animation of derivatives](wiggly.gif)
-
----
-
-# Making wigglyness matter
-
-
-- Integration of derivative (squared) gives wigglyness
-- Fit needs to be **penalised**
-- **Penalty matrix** gives the wigglyness 
-- Estimate the `\(\beta_k\)` terms but penalise objective
-  - "closeness to data" + penalty
-
-
----
-
-# Penalty matrix
-
-
-- For each `\(b_k\)` calculate the penalty
-- Penalty is a function of `\(\beta\)`
-  - `\(\lambda \beta^\text{T}S\beta\)`
-- `\(S\)` (*penalty matrix*) calculated once
-- *smoothing parameter*, `\(\lambda\)` dictates influence
-
+- maximize "closeness to data" - penalty
+  - *smoothing parameter*, `\(\lambda\)` scales influence
 
 ---
 
 # Smoothing parameter
-
 
 
 ![](dsm2-gams_files/figure-html/wiggles-plot-1.png)&lt;!-- --&gt;
@@ -289,84 +215,34 @@ class: inverse, middle, center
 # How wiggly are things?
 
 
-- We can set **basis complexity** or "size" `\(k\)`
-  - Maximum wigglyness
+- set **basis complexity** or "size" `\(k\)`
 - Smooths have **effective degrees of freedom** (EDF)
-- EDF &lt; `\(k\)`
 - Set `\(k\)` "large enough"
 
+![](dsm2-gams_files/figure-html/wiggles-plot-EDF-1.png)&lt;!-- --&gt;
 
 ---
 
 
-# Why GAMs are cool...
+# Getting more out of GAMs
 
 .pull-left[
 ![](images/igam.jpg)
 ]
 
 .pull-right[
-- Fancy smooths (cyclic, boundaries, ...)
-- Fancy responses (exp family and beyond!)
-- Random effects (by equivalence)
-- Markov random fields
-- Correlation structures
-- See Wood (2006/2017) for a handy intro
+- I can't teach you all of GAMs in 2.5 days...
+- Good intro book
+- (also a good textbook on GLMs and GLMMs)
 ]
 
 
-
 ---
-
 class: inverse, middle, center
 
-# Okay, that was a lot of theory...
-
-
+# Modelling philosophy
 
 ---
-
-class: inverse, middle, center
-
-# Example data
-
-
-
----
-
-# Example data
-
-
-&lt;img src="images/data_ships.png"&gt;
-
----
-
-
-# Example data
-
-
-&lt;img src="images/observers.png"&gt;
-
----
-
-
-# Sperm whales off the US east coast
-
-
-.pull-left[
-&lt;img src="images/spermwhale.png" width="100%"&gt;
-]
-.pull-right[
-
-- Hang out near canyons, eat squid
-- Surveys in 2004, US east coast
-- Combination of data from 2 NOAA cruises
-- Thanks to Debi Palka (NOAA NEFSC), Lance Garrison (NOAA SEFSC) for data. Jason Roberts (Duke University) for data prep.
-]
-
-
----
-
 
 # Model formulation
 
@@ -551,27 +427,6 @@ plot(dsm_xy_tw, pages=1)
 
 ---
 
-# Thin plate regression splines
-
-
-- Default basis
-- One basis function per data point
-- Reduce # basis functions (eigendecomposition)
-- Fitting on reduced problem
-- Multidimensional
-
-
----
-
-# Thin plate splines (2-D)
-
-
-&lt;img src="images/tprs.png" alt="Thin plate regression spline basis functions. Taken from Wood 2006."&gt;
-
-
----
-
-
 # Bivariate spatial term
 
 
@@ -670,6 +525,7 @@ class: inverse, middle, center
 
 # Let's have a go...
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
@@ -679,16 +535,57 @@ class: inverse, middle, center
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -702,7 +599,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

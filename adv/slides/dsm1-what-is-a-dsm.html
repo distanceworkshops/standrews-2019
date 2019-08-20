@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>What is a density surface model?</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="David L Miller (@millerdl)" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -24,21 +24,64 @@ class: title-slide, inverse, center, middle
 
 ---
 
+class: inverse, middle, center
 
 # Why model abundance spatially?
 
+---
+class: inverse, middle, center
 
-- Use non-designed surveys
-- Use environmental information
-- Maps
+# Maps
+---
 
+.pull-left[
+![](images/ak-talk.png)
+![](images/bigbears.png)
+]
+
+.pull-right[
+- Black bears in Alaska
+- Heterogeneous spatial distribution
+
+]
+
+---
+class: inverse, middle, center
+
+# Spatial decision making
+
+---
+
+.pull-left[
+![](images/block_island.png)
+![](images/plot-loon-preds.png)
+]
+
+.pull-right[
+- Block Island, Rhode Island
+- First offshore wind in the USA
+- Spatial impact assessment
+
+![](images/block-island-windfarms.png)
+]
+
+---
+
+class: inverse, middle, center
+
+# Biological insights
+
+---
+# 
+
+![](images/sperm-covs.png)
+![](images/sperm-smooths.png)
 
 ---
 
 class: inverse, middle, center
 
 # Back to Horvitz-Thompson estimation
-
 
 ---
 
@@ -144,23 +187,6 @@ class: inverse, middle, center
 # You should model that
 
 ---
-
-
-# Modelling outputs
-
-
-- Abundance and uncertainty
-  - Arbitrary areas
-  - Numeric values
-  - Maps
-  - Extrapolation (with caution!)
-- Covariate effects
-  - count/sample as function of covars
-
-
-
----
-
 
 # Modelling requirements
 
@@ -340,26 +366,6 @@ $$
 
 class: inverse, middle, center
 
-# Spatial models
-
----
-
-
-# Abundance as a function of covariates
-
-
-- Two approaches to model abundance
-- Explicit spatial models
-  - When: good coverage, fixed area
-- "Habitat" models (no explicit spatial terms)
-  - When: poorer coverage, extrapolation
-- We'll cover both approaches here
-
-
----
-
-class: inverse, middle, center
-
 # Data requirements
 
 ---
@@ -372,13 +378,48 @@ class: inverse, middle, center
   - ✅ Segment data
   - ✅ Observation data (segments 🔗 detections)
 
+---
+
+![](dsm_tables.png)
+
+---
+class: inverse, middle, center
+
+# Example data
+
+
 
 ---
 
-class: inverse, middle, center
+# Example data
 
-# Example of spatial data in QGIS
 
+&lt;img src="images/data_ships.png"&gt;
+
+---
+
+
+# Example data
+
+
+&lt;img src="images/observers.png"&gt;
+
+---
+
+
+# Sperm whales off the US east coast
+
+
+.pull-left[
+&lt;img src="images/spermwhale.png" width="100%"&gt;
+]
+.pull-right[
+
+- Hang out near canyons, eat squid
+- Surveys in 2004, US east coast
+- Combination of data from 2 NOAA cruises
+- Thanks to Debi Palka (NOAA NEFSC), Lance Garrison (NOAA SEFSC) for data. Jason Roberts (Duke University) for data prep.
+]
 
 ---
 
@@ -391,6 +432,7 @@ class: inverse, middle, center
 - Incorporate detectability
 - 2 tables + detection function needed
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
@@ -400,16 +442,57 @@ class: inverse, middle, center
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -423,7 +506,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

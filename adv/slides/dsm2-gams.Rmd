@@ -64,24 +64,6 @@ dsm_tw_xy_depth <- dsm(count ~ s(x, y) + s(Depth), ddf.obj=df, observation.data=
 
 ---
 
-class: inverse, middle, center
-# What is a GAM?
-
-
-
----
-
-# "gam"
-
-
-1. *Collective noun used to refer to a group of whales, or rarely also of porpoises; a pod.*
-2. *(by extension) A social gathering of whalers (whaling ships).*
-
-(via Natalie Kelly, AAD. Seen in Moby Dick.)
-
-
----
-
 # Generalized Additive Models
 
 
@@ -146,10 +128,10 @@ hist(dsm_tw_xy_depth$data$count, xlab="Count", main="")
 ```
 ]
 .pull-right[
-- Response is a count (not not always integer)
-- Often, it's mostly zero (that's complicated)
-- Want response distribution that deals with that
+- Response is a count
+- Often, it's mostly zero
 - Flexible mean-variance relationship
+- (Poisson isn't good at this)
 ]
 
 ---
@@ -249,42 +231,6 @@ where $\epsilon_j$ are some errors, $\quad n_j\sim$ count distribution
 
 
 .pull-left[
-```{r n-covar, fig.height=12, fig.width=9}
-spdat <- dsm_tw_xy_depth$data
-spdat <- melt(spdat, id.vars = c("Sample.Label","count"), measure.vars = c("x","y"))
-p <- ggplot(spdat) +
-      geom_point(aes(y=count,x=value)) +
-      theme_minimal() +
-      theme(strip.text=element_text(size=25),
-            axis.text.y=element_text(size=15)) + 
-      xlab("") + ylab("Count") +
-      facet_wrap(~variable, ncol=1)
-print(p)
-```
-]
-.pull-right[
-- Think $s$=**smooth**
-- Want to model the covariates flexibly
-- Covariates and response not necessarily linearly related!
-- Want some wiggles
-]
-
-
----
-
-class: inverse, middle, center
-
-# What is smoothing?
-
-
-
----
-
-
-# Straight lines vs. interpolation
-
-
-.pull-left[
 ```{r wiggles}
 par(cex=1.5, lwd=1.75)
 library(mgcv)
@@ -302,18 +248,22 @@ b.spinf <- gam(y~s(x2),data=dat, sp=1e10)
 
 curve(f2, 0, 1, col="blue", ylim=ylim)
 points(dat$x2, dat$y-mean(dat$y), pch=19, cex=0.8)
-
 ```
 ]
-
 .pull-right[
+- *Think* $s$=**smooth**
 - Want a line that is "close" to all the data
-- Don't want interpolation -- we know there is "error"
 - Balance between interpolation and "fit"
 ]
 
+
 ---
 
+class: inverse, middle, center
+
+# What is smoothing?
+
+---
 
 # Splines
 
@@ -322,17 +272,17 @@ points(dat$x2, dat$y-mean(dat$y), pch=19, cex=0.8)
 par(cex=1.5, mar=c(5, 4, 1, 2) + 0.1, ps=20)
 set.seed(2)
 datb <- gamSim(1,n=400,dist="normal",scale=2)
-bb <- gam(y~s(x0, k=5, bs="cr"),data=datb)
+bb <- gam(y~s(x0, k=10, bs="bs"),data=datb)
 
 # main plot
-plot(bb, se=FALSE, ylim=c(-1, 1), lwd=3)
+plot(bb, se=FALSE, ylim=c(-1, 1), lwd=3, col="blue", rug=FALSE)
 
 # plot each basis
 cf <- coef(bb)
 xp <- data.frame(x0=seq(0, 1, length.out=100))
 Xp <- predict(bb, newdata=xp, type="lpmatrix")
 
-for(i in 1:length(cf)){
+for(i in 2:length(cf)){
   cf_c <- cf
   cf_c[-i] <- 0
   cf_c[i] <- 1
@@ -345,7 +295,6 @@ for(i in 1:length(cf)){
 - Functions made of other, simpler functions
 - **Basis functions** $b_k$, estimate $\beta_k$ 
 - $s(x) = \sum_{k=1}^K \beta_k b_k(x)$
-- Makes the maths much easier
 ]
 
 ---
@@ -354,87 +303,17 @@ for(i in 1:length(cf)){
 
 
 - Visually:
-  - Lots of wiggles == NOT SMOOTH
-  - Straight line == VERY SMOOTH
-- How do we do this mathematically?
-  - Derivatives!
+  - Lots of wiggles $\Rightarrow$ *not smooth*
+  - Straight line $\Rightarrow$ *very smooth*
+  - Measure with derivatives
   - (Calculus *was* a useful class after all)
 
-
-
----
-
-
-# Wigglyness by derivatives
-
-
-```{r wigglyanim, results="hide", fig.width=12}
-par(cex=1.5, lwd=1.75)
-
-library(numDeriv)
-f2 <- function(x) 0.2*x^11*(10*(1-x))^6+10*(10*x)^3*(1-x)^10 - mean(dat$y)
-
-xvals <- seq(0,1,len=100)
-
-plot_wiggly <- function(f2, xvals){
-
-  # pre-calculate
-  f2v <- f2(xvals)
-  f2vg <- grad(f2,xvals)
-  f2vg2 <- unlist(lapply(xvals, hessian, func=f2))
-  f2vg2min <- min(f2vg2) -2
-
-  # now plot
-  for(i in 1:length(xvals)){
-    par(mfrow=c(1,3))
-    plot(xvals, f2v, type="l", main="function", ylab="f")
-    points(xvals[i], f2v[i], pch=19, col="red")
-
-    plot(xvals, f2vg, type="l", main="derivative", ylab="df/dx")
-    points(xvals[i], f2vg[i], pch=19, col="red")
-
-    plot(xvals, f2vg2, type="l", main="2nd derivative", ylab="d2f/dx2")
-    points(xvals[i], f2vg2[i], pch=19, col="red")
-    polygon(x=c(0,xvals[1:i], xvals[i],f2vg2min),
-            y=c(f2vg2min,f2vg2[1:i],f2vg2min,f2vg2min), col = "grey")
-
-    ani.pause()
-  }
-}
-
-saveGIF(plot_wiggly(f2, xvals), "wiggly.gif", interval = 0.2, ani.width = 800, ani.height = 400)
-```
-
-![Animation of derivatives](wiggly.gif)
-
----
-
-# Making wigglyness matter
-
-
-- Integration of derivative (squared) gives wigglyness
-- Fit needs to be **penalised**
-- **Penalty matrix** gives the wigglyness 
-- Estimate the $\beta_k$ terms but penalise objective
-  - "closeness to data" + penalty
-
-
----
-
-# Penalty matrix
-
-
-- For each $b_k$ calculate the penalty
-- Penalty is a function of $\beta$
-  - $\lambda \beta^\text{T}S\beta$
-- $S$ (*penalty matrix*) calculated once
-- *smoothing parameter*, $\lambda$ dictates influence
-
+- maximize "closeness to data" - penalty
+  - *smoothing parameter*, $\lambda$ scales influence
 
 ---
 
 # Smoothing parameter
-
 
 
 ```{r wiggles-plot, fig.width=18, fig.height=10}
@@ -461,84 +340,50 @@ curve(f2,0,1, col="blue", add=TRUE)
 # How wiggly are things?
 
 
-- We can set **basis complexity** or "size" $k$
-  - Maximum wigglyness
+- set **basis complexity** or "size" $k$
 - Smooths have **effective degrees of freedom** (EDF)
-- EDF < $k$
 - Set $k$ "large enough"
 
+```{r wiggles-plot-EDF, fig.width=18, fig.height=8}
+# make three plots, w. estimated smooth, truth and data on each
+par(mfrow=c(1,3), lwd=2.6, cex=1.6, pch=19, cex.main=1.8)
+
+plot(b.justright, se=FALSE, ylim=ylim, main=paste0("EDF=",round(sum(b.justright$edf),2)))
+points(dat$x2, dat$y-mean(dat$y))
+curve(f2,0,1, col="blue", add=TRUE)
+
+plot(b.sp0, se=FALSE, ylim=ylim, main=paste0("EDF=",round(sum(b.sp0$edf),2)))
+points(dat$x2, dat$y-mean(dat$y))
+curve(f2,0,1, col="blue", add=TRUE)
+
+plot(b.spinf, se=FALSE, ylim=ylim, main=paste0("EDF=",round(sum(b.spinf$edf),2)))
+points(dat$x2, dat$y-mean(dat$y))
+curve(f2,0,1, col="blue", add=TRUE)
+
+```
 
 ---
 
 
-# Why GAMs are cool...
+# Getting more out of GAMs
 
 .pull-left[
 ![](images/igam.jpg)
 ]
 
 .pull-right[
-- Fancy smooths (cyclic, boundaries, ...)
-- Fancy responses (exp family and beyond!)
-- Random effects (by equivalence)
-- Markov random fields
-- Correlation structures
-- See Wood (2006/2017) for a handy intro
+- I can't teach you all of GAMs in 2.5 days...
+- Good intro book
+- (also a good textbook on GLMs and GLMMs)
 ]
 
 
-
 ---
-
 class: inverse, middle, center
 
-# Okay, that was a lot of theory...
-
-
+# Modelling philosophy
 
 ---
-
-class: inverse, middle, center
-
-# Example data
-
-
-
----
-
-# Example data
-
-
-<img src="images/data_ships.png">
-
----
-
-
-# Example data
-
-
-<img src="images/observers.png">
-
----
-
-
-# Sperm whales off the US east coast
-
-
-.pull-left[
-<img src="images/spermwhale.png" width="100%">
-]
-.pull-right[
-
-- Hang out near canyons, eat squid
-- Surveys in 2004, US east coast
-- Combination of data from 2 NOAA cruises
-- Thanks to Debi Palka (NOAA NEFSC), Lance Garrison (NOAA SEFSC) for data. Jason Roberts (Duke University) for data prep.
-]
-
-
----
-
 
 # Model formulation
 
@@ -675,27 +520,6 @@ plot(dsm_xy_tw, pages=1, lwd=3)
 
 
 ---
-
-# Thin plate regression splines
-
-
-- Default basis
-- One basis function per data point
-- Reduce # basis functions (eigendecomposition)
-- Fitting on reduced problem
-- Multidimensional
-
-
----
-
-# Thin plate splines (2-D)
-
-
-<img src="images/tprs.png" alt="Thin plate regression spline basis functions. Taken from Wood 2006.">
-
-
----
-
 
 # Bivariate spatial term
 
