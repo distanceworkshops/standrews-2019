@@ -61,22 +61,11 @@ class: inverse, center, middle
 
 ---
 
-
-# Some days...
-
-
-![2 fire emoji, a computer emoji, 2 fire emoji](images/firecomputer.png)
-
-
----
-
 # Aims
-
 
 - Here we want to cover common questions
 - Not definitive answers
 - Some guidance on where to look for answers
-
 
 ---
 

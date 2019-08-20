@@ -76,15 +76,6 @@ class: inverse, middle, center
 
 ---
 
-# What to check
-
-
-- Convergence
-- Basis size
-- Residuals
-
-
----
 class: inverse, middle, center
 
 # Convergence

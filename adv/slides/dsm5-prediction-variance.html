@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Predictions and variance</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="David L Miller (@millerdl)" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -328,59 +328,6 @@ class: inverse, middle, center
 
 ![](dsm5-prediction-variance_files/figure-html/unc-sources-1.png)&lt;!-- --&gt;
 
-
----
-
-class: inverse, middle, center
-# Let's think about smooths first
-
-
-
----
-
-# Uncertainty in smooths
-
-
-- Dashed lines are +/- 2 standard errors
-- How do we translate to `\(\hat{N}\)`?
-
-![](dsm5-prediction-variance_files/figure-html/twmod-unc-smooth-1.png)&lt;!-- --&gt;
-
-
----
-
-
-# Back to bases
-
-
-- Before we expressed smooths as:
-  - `\(s(x) = \sum_{k=1}^K \beta_k b_k(x)\)`
-- Theory tells us that:
-  - `\(\boldsymbol{\beta} \sim N(\boldsymbol{\hat{\beta}}, \mathbf{V}_\boldsymbol{\beta})\)`
-  - where `\(\mathbf{V}_\boldsymbol{\beta}\)` is a bit complicated
-  - (derived from the smoother matrix)
-
----
-
-
-# Predictions to prediction variance (roughly)
-
-
-- "map" data onto fitted values `\(\mathbf{X}\hat{\boldsymbol{\beta}}\)`
-- "map" prediction matrix to predictions `\(\mathbf{X}_p \hat{\boldsymbol{\beta}}\)`
-- Here `\(\mathbf{X}_p\)` need to take smooths into account
-- pre-/post-multiply by `\(\mathbf{X}_p\)` to "transform variance"
-  - `\(\Rightarrow \mathbf{X}_p^\text{T}\mathbf{V}_\boldsymbol{\beta} \mathbf{X}_p\)`
-  - link scale, need to do another transform for response
-
-
----
-
-class: inverse, middle, center
-
-# Adding in detection functions
-
-
 ---
 
 # GAM + detection function uncertainty
@@ -409,20 +356,6 @@ $$
 
 ---
 
-
-# Variance propagation
-
-- Refit model with "extra" term
-
-`\(\mathbb{E}\left[n_{j}\right]=A_{j}\hat{p}(\boldsymbol{\theta}, z_{j}) \exp\left[ X_{j}\boldsymbol{\beta}+\color{red}{\left.\frac{d\log p\left(\boldsymbol{\theta},z_{j}\right)}{d\boldsymbol{\theta}}\right|_{\boldsymbol{\theta}=\boldsymbol{\theta}_{0}} \boldsymbol{\delta}}\right]\)`
-
-- where `\(\boldsymbol{\delta}\)` is a *random effect*
-- fix covariance matrix s.t. `\(\boldsymbol{\delta} \sim N(0,-\mathbf{H}^{-1}_\theta)\)`
-- `\(\mathbf{H}_\theta\)` is Hessian from detection function
-
-
----
-
 # Variance propagation
 
 - Include the detectability as term in GAM
@@ -430,16 +363,6 @@ $$
 - Uncertainty "propagated" through the model
 - Paper in bibliography (too much to detail here)
 - (Can cover in special topic)
-
----
-
-class: inverse, middle, center
-# That seemed complicated...
-
----
-
-class: inverse, middle, center
-# R to the rescue
 
 ---
 
@@ -530,23 +453,25 @@ head(predgrid_split,3)
 ## 258      3 0.01118858  10000 10000
 ```
 
-```r
-dsm_tw_var_map &lt;- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
-                               off.set=predgrid$off.set)
-```
-
 
 ---
 
 # CV plot
 
-.pull-left[
 
+```r
+dsm_tw_var_map &lt;- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
+                               off.set=predgrid$off.set)
+```
+
+.pull-left[
 ![](dsm5-prediction-variance_files/figure-html/plotit-1.png)&lt;!-- --&gt;
 ]
 .pull-right[
 ```
-p &lt;- plot(dsm_tw_var_map, observations=FALSE, plot=FALSE) + 
+p &lt;- plot(dsm_tw_var_map,
+          observations=FALSE,
+          plot=FALSE) + 
       coord_equal() +
       scale_fill_viridis()
 print(p)
@@ -557,12 +482,10 @@ print(p)
 
 # Interpreting CV plots
 
-
 - Plotting coefficient of variation
 - Standardise standard deviation by mean
 - `\(\text{CV} = \text{se}(\hat{N})/\hat{N}\)` (per cell)
 - Can be useful to overplot survey effort
-
 
 ---
 
@@ -603,7 +526,67 @@ class: inverse, middle, center
 
 
 # Let's try that!
+
+---
+
+class: inverse, middle, center
+# Extra: brief explanation of uncertainty in smooths
+
+
+
+---
+
+# Uncertainty in smooths
+
+
+- Dashed lines are +/- 2 standard errors
+- How do we translate to `\(\hat{N}\)`?
+
+![](dsm5-prediction-variance_files/figure-html/twmod-unc-smooth-1.png)&lt;!-- --&gt;
+
+
+---
+
+
+# Back to bases
+
+
+- Before we expressed smooths as:
+  - `\(s(x) = \sum_{k=1}^K \beta_k b_k(x)\)`
+- Theory tells us that:
+  - `\(\boldsymbol{\beta} \sim N(\boldsymbol{\hat{\beta}}, \mathbf{V}_\boldsymbol{\beta})\)`
+  - where `\(\mathbf{V}_\boldsymbol{\beta}\)` is a bit complicated
+  - (derived from the smoother matrix)
+
+---
+
+
+# Predictions to prediction variance (roughly)
+
+
+- "map" data onto fitted values `\(\mathbf{X}\hat{\boldsymbol{\beta}}\)`
+- "map" prediction matrix to predictions `\(\mathbf{X}_p \hat{\boldsymbol{\beta}}\)`
+- Here `\(\mathbf{X}_p\)` need to take smooths into account
+- pre-/post-multiply by `\(\mathbf{X}_p\)` to "transform variance"
+  - `\(\Rightarrow \mathbf{X}_p^\text{T}\mathbf{V}_\boldsymbol{\beta} \mathbf{X}_p\)`
+  - link scale, need to do another transform for response
+
+
+
+---
+
+
+# Variance propagation
+
+- Refit model with "extra" term
+
+`\(\mathbb{E}\left[n_{j}\right]=A_{j}\hat{p}(\boldsymbol{\theta}, z_{j}) \exp\left[ X_{j}\boldsymbol{\beta}+\color{red}{\left.\frac{d\log p\left(\boldsymbol{\theta},z_{j}\right)}{d\boldsymbol{\theta}}\right|_{\boldsymbol{\theta}=\boldsymbol{\theta}_{0}} \boldsymbol{\delta}}\right]\)`
+
+- where `\(\boldsymbol{\delta}\)` is a *random effect*
+- fix covariance matrix s.t. `\(\boldsymbol{\delta} \sim N(0,-\mathbf{H}^{-1}_\theta)\)`
+- `\(\mathbf{H}_\theta\)` is Hessian from detection function
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
@@ -613,16 +596,57 @@ class: inverse, middle, center
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -636,7 +660,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

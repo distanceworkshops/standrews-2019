@@ -411,64 +411,6 @@ plot(df_hr)
 plot(dsm_all_tw_rm, select=2)
 ```
 
-
----
-
-class: inverse, middle, center
-# Let's think about smooths first
-
-
-
----
-
-# Uncertainty in smooths
-
-
-- Dashed lines are +/- 2 standard errors
-- How do we translate to $\hat{N}$?
-
-```{r twmod-unc-smooth, fig.width=18}
-par(mfrow=c(1,3), lwd=2, cex.lab=3.5, cex.axis=2, mar=c(5,6,4,2))
-plot(dsm_all, scale=0, scheme=2, select=2)
-plot(dsm_all, scale=0, scheme=2, select=4)
-plot(dsm_all, scale=0, scheme=2, select=5)
-```
-
-
----
-
-
-# Back to bases
-
-
-- Before we expressed smooths as:
-  - $s(x) = \sum_{k=1}^K \beta_k b_k(x)$
-- Theory tells us that:
-  - $\boldsymbol{\beta} \sim N(\boldsymbol{\hat{\beta}}, \mathbf{V}_\boldsymbol{\beta})$
-  - where $\mathbf{V}_\boldsymbol{\beta}$ is a bit complicated
-  - (derived from the smoother matrix)
-
----
-
-
-# Predictions to prediction variance (roughly)
-
-
-- "map" data onto fitted values $\mathbf{X}\hat{\boldsymbol{\beta}}$
-- "map" prediction matrix to predictions $\mathbf{X}_p \hat{\boldsymbol{\beta}}$
-- Here $\mathbf{X}_p$ need to take smooths into account
-- pre-/post-multiply by $\mathbf{X}_p$ to "transform variance"
-  - $\Rightarrow \mathbf{X}_p^\text{T}\mathbf{V}_\boldsymbol{\beta} \mathbf{X}_p$
-  - link scale, need to do another transform for response
-
-
----
-
-class: inverse, middle, center
-
-# Adding in detection functions
-
-
 ---
 
 # GAM + detection function uncertainty
@@ -497,20 +439,6 @@ $$
 
 ---
 
-
-# Variance propagation
-
-- Refit model with "extra" term
-
-$\mathbb{E}\left[n_{j}\right]=A_{j}\hat{p}(\boldsymbol{\theta}, z_{j}) \exp\left[ X_{j}\boldsymbol{\beta}+\color{red}{\left.\frac{d\log p\left(\boldsymbol{\theta},z_{j}\right)}{d\boldsymbol{\theta}}\right|_{\boldsymbol{\theta}=\boldsymbol{\theta}_{0}} \boldsymbol{\delta}}\right]$
-
-- where $\boldsymbol{\delta}$ is a *random effect*
-- fix covariance matrix s.t. $\boldsymbol{\delta} \sim N(0,-\mathbf{H}^{-1}_\theta)$
-- $\mathbf{H}_\theta$ is Hessian from detection function
-
-
----
-
 # Variance propagation
 
 - Include the detectability as term in GAM
@@ -518,16 +446,6 @@ $\mathbb{E}\left[n_{j}\right]=A_{j}\hat{p}(\boldsymbol{\theta}, z_{j}) \exp\left
 - Uncertainty "propagated" through the model
 - Paper in bibliography (too much to detail here)
 - (Can cover in special topic)
-
----
-
-class: inverse, middle, center
-# That seemed complicated...
-
----
-
-class: inverse, middle, center
-# R to the rescue
 
 ---
 
@@ -578,8 +496,6 @@ summary(dsm_tw_var_ind)
 predgrid$width <- predgrid$height <- 10*1000
 predgrid_split <- split(predgrid, 1:nrow(predgrid))
 head(predgrid_split,3)
-dsm_tw_var_map <- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
-                               off.set=predgrid$off.set)
 ```
 
 
@@ -587,9 +503,15 @@ dsm_tw_var_map <- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
 
 # CV plot
 
-.pull-left[
+```{r thingo, echo=TRUE}
+dsm_tw_var_map <- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
+                               off.set=predgrid$off.set)
+```
 
+.pull-left[
 ```{r plotit}
+dsm_tw_var_map <- dsm.var.gam(dsm_all_tw_rm, predgrid_split,
+                               off.set=predgrid$off.set)
 p <- plot(dsm_tw_var_map, observations=FALSE, plot=FALSE) + 
       coord_equal() +
       theme(legend.position="bottom") +
@@ -599,7 +521,9 @@ print(p)
 ]
 .pull-right[
 ```
-p <- plot(dsm_tw_var_map, observations=FALSE, plot=FALSE) + 
+p <- plot(dsm_tw_var_map,
+          observations=FALSE,
+          plot=FALSE) + 
       coord_equal() +
       scale_fill_viridis()
 print(p)
@@ -610,12 +534,10 @@ print(p)
 
 # Interpreting CV plots
 
-
 - Plotting coefficient of variation
 - Standardise standard deviation by mean
 - $\text{CV} = \text{se}(\hat{N})/\hat{N}$ (per cell)
 - Can be useful to overplot survey effort
-
 
 ---
 
@@ -667,4 +589,68 @@ class: inverse, middle, center
 
 
 # Let's try that!
+
+---
+
+class: inverse, middle, center
+# Extra: brief explanation of uncertainty in smooths
+
+
+
+---
+
+# Uncertainty in smooths
+
+
+- Dashed lines are +/- 2 standard errors
+- How do we translate to $\hat{N}$?
+
+```{r twmod-unc-smooth, fig.width=18}
+par(mfrow=c(1,3), lwd=2, cex.lab=3.5, cex.axis=2, mar=c(5,6,4,2))
+plot(dsm_all, scale=0, scheme=2, select=2)
+plot(dsm_all, scale=0, scheme=2, select=4)
+plot(dsm_all, scale=0, scheme=2, select=5)
+```
+
+
+---
+
+
+# Back to bases
+
+
+- Before we expressed smooths as:
+  - $s(x) = \sum_{k=1}^K \beta_k b_k(x)$
+- Theory tells us that:
+  - $\boldsymbol{\beta} \sim N(\boldsymbol{\hat{\beta}}, \mathbf{V}_\boldsymbol{\beta})$
+  - where $\mathbf{V}_\boldsymbol{\beta}$ is a bit complicated
+  - (derived from the smoother matrix)
+
+---
+
+
+# Predictions to prediction variance (roughly)
+
+
+- "map" data onto fitted values $\mathbf{X}\hat{\boldsymbol{\beta}}$
+- "map" prediction matrix to predictions $\mathbf{X}_p \hat{\boldsymbol{\beta}}$
+- Here $\mathbf{X}_p$ need to take smooths into account
+- pre-/post-multiply by $\mathbf{X}_p$ to "transform variance"
+  - $\Rightarrow \mathbf{X}_p^\text{T}\mathbf{V}_\boldsymbol{\beta} \mathbf{X}_p$
+  - link scale, need to do another transform for response
+
+
+
+---
+
+
+# Variance propagation
+
+- Refit model with "extra" term
+
+$\mathbb{E}\left[n_{j}\right]=A_{j}\hat{p}(\boldsymbol{\theta}, z_{j}) \exp\left[ X_{j}\boldsymbol{\beta}+\color{red}{\left.\frac{d\log p\left(\boldsymbol{\theta},z_{j}\right)}{d\boldsymbol{\theta}}\right|_{\boldsymbol{\theta}=\boldsymbol{\theta}_{0}} \boldsymbol{\delta}}\right]$
+
+- where $\boldsymbol{\delta}$ is a *random effect*
+- fix covariance matrix s.t. $\boldsymbol{\delta} \sim N(0,-\mathbf{H}^{-1}_\theta)$
+- $\mathbf{H}_\theta$ is Hessian from detection function
 

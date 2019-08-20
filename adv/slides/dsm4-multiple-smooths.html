@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Multivariate smoothing, model selection</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="David L Miller (@millerdl)" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -30,14 +30,13 @@ class: title-slide, inverse, center, middle
 
 
 
-# Recap
+# The story so far...
 
 
 - How GAMs work
 - How to include detection info
 - Simple spatial-only models
 - How to check those models
-
 
 ---
 class: inverse, middle, center
@@ -46,9 +45,7 @@ class: inverse, middle, center
 
 ---
 
-
 # Ecology is not univariate
-
 
 - Many variables affect distribution
 - Want to model the **right** ones
@@ -114,7 +111,7 @@ class: inverse, middle, center
 
 ---
 
-# p-values example
+# 
 
 
 ```
@@ -216,7 +213,7 @@ dsm_ts_all &lt;- dsm(count~s(x, y, bs="ts") +
 
 ---
 
-# Shrinkage in action
+# 
 
 
 ```r
@@ -262,8 +259,8 @@ summary(dsm_ts_all)
 
 .pull-left[
 - `dsm(..., select=TRUE)` - extra penalty
-- no assumption of how much to shrink the nullspace
-- "no assumption" might not be such a good idea?
+- shrinks everything at the same time
+- what to shrink "first"? 
 ]
 .pull-right[
 ![animation of penalty in action](images/shrinky_dink_select.gif)
@@ -289,8 +286,7 @@ dsm_sel &lt;- dsm(count~s(x, y) +
 
 ---
 
-# Extra penalty example
-
+# 
 
 
 ```r
@@ -326,7 +322,6 @@ summary(dsm_sel)
 ## R-sq.(adj) =   0.16   Deviance explained = 40.9%
 ## -REML =    378  Scale est. = 4.2252    n = 949
 ```
-
 
 ---
 
@@ -495,31 +490,29 @@ AIC(dsm_ts_all)
 
 ---
 
-# A quick note about REML scores
-
-- Use REML to select the smoothness
-- Can also use the score to do model selection
-- **BUT** only compare models with the same fixed effects
-  - (i.e., same "linear terms" in the model)
-- `\(\Rightarrow\)` **All terms** must be penalised
-  - `bs="ts"` or `select=TRUE`
-
-
----
-
 class: inverse, middle, center
 
 # Selecting between response distributions
 
 ---
 
-# Goodness of fit tests
+# Goodness of fit
 
 
 - Q-Q plots
 - Closer to the line == better
 ![](dsm4-multiple-smooths_files/figure-html/gof-qq-1.png)&lt;!-- --&gt;
 
+---
+
+# Using reference bands
+
+```
+qq.gam(dsm_all, asp=1, main="Tweedie",
+       cex=5, rep=100)
+```
+
+![](dsm4-multiple-smooths_files/figure-html/gof-qq-ref-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -552,55 +545,6 @@ class: inverse, middle, center
 
 ---
 
-# Concurvity (model/smooth)
-
-
-
-```r
-concurvity(dsm_all)
-```
-
-```
-##                  para    s(x,y)  s(Depth) s(DistToCAS)    s(SST)    s(EKE)
-## worst    2.539199e-23 0.9963493 0.9836597    0.9959057 0.9772853 0.7702479
-## observed 2.539199e-23 0.9213461 0.8275679    0.9883162 0.6951997 0.6615697
-## estimate 2.539199e-23 0.7580838 0.9272203    0.9642030 0.8978412 0.4906765
-##             s(NPP)
-## worst    0.9727752
-## observed 0.8258504
-## estimate 0.8694619
-```
-
----
-
-# Concurvity between smooths
-
-
-```r
-concurvity(dsm_all, full=FALSE)$estimate
-```
-
-```
-##                      para       s(x,y)     s(Depth) s(DistToCAS)
-## para         1.000000e+00 4.700364e-26 4.640330e-28 6.317431e-27
-## s(x,y)       8.687343e-24 1.000000e+00 9.067347e-01 9.568609e-01
-## s(Depth)     1.960563e-25 2.247389e-01 1.000000e+00 2.699392e-01
-## s(DistToCAS) 2.964353e-24 4.335154e-01 2.568123e-01 1.000000e+00
-## s(SST)       3.614289e-25 5.102860e-01 3.707617e-01 5.107111e-01
-## s(EKE)       1.283557e-24 1.220299e-01 1.527425e-01 1.205373e-01
-## s(NPP)       2.034284e-25 4.407590e-01 2.067464e-01 2.701934e-01
-##                    s(SST)       s(EKE)       s(NPP)
-## para         5.042066e-28 3.615073e-27 6.078290e-28
-## s(x,y)       7.205518e-01 3.201531e-01 6.821674e-01
-## s(Depth)     1.232244e-01 6.422005e-02 1.990567e-01
-## s(DistToCAS) 2.554027e-01 1.319306e-01 2.590227e-01
-## s(SST)       1.000000e+00 1.735256e-01 7.616800e-01
-## s(EKE)       2.410615e-01 1.000000e+00 2.787592e-01
-## s(NPP)       7.833972e-01 1.033109e-01 1.000000e+00
-```
-
----
-
 # Visualising concurvity between terms
 
 .pull-left[
@@ -608,7 +552,8 @@ concurvity(dsm_all, full=FALSE)$estimate
 ]
 
 .pull-right[
-- Previous matrix output visualised
+- `vis.concurvity`
+- (Visualisation of `concurvity`)
 - High values (yellow) = BAD
 ]
 
@@ -648,7 +593,6 @@ class: inverse, middle, center
 
 
 - `s(Depth)` and `s(x, y)` are highly concurve (0.9067)
-- Refit removing `Depth` first
 
 
 
@@ -766,7 +710,7 @@ class: inverse, middle, center
 &lt;/table&gt;
 
 - "Full" model still explains most deviance
-- No depth model requires spatial smooth to "mop up" extra variation
+- "No depth" model requires spatial smooth to "mop up" extra variation
 - We'll come back to this when we do prediction
 
 
@@ -791,6 +735,7 @@ class: inverse, middle, center
 - Comparing response distributions
 - Sensitivity
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
@@ -800,16 +745,57 @@ class: inverse, middle, center
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -823,7 +809,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

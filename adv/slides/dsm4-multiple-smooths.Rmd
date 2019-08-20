@@ -45,7 +45,7 @@ class: title-slide, inverse, center, middle
 
 
 
-```{r initialmodeletc, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
+```{r initialmodeletc, echo=FALSE, message=FALSE, warning=FALSE}
 load("../practicals/spermwhale.RData")
 library(Distance)
 library(dsm)
@@ -55,14 +55,13 @@ dsm_tw_xy_depth <- dsm(count ~ s(x, y) + s(Depth), ddf.obj=df_hr, observation.da
 ```
 
 
-# Recap
+# The story so far...
 
 
 - How GAMs work
 - How to include detection info
 - Simple spatial-only models
 - How to check those models
-
 
 ---
 class: inverse, middle, center
@@ -71,9 +70,7 @@ class: inverse, middle, center
 
 ---
 
-
 # Ecology is not univariate
-
 
 - Many variables affect distribution
 - Want to model the **right** ones
@@ -138,7 +135,7 @@ class: inverse, middle, center
 
 ---
 
-# p-values example
+# 
 
 ```{r p-summary}
 summary(dsm_all)
@@ -268,7 +265,7 @@ plot(dsm_ts_all, pages=1, scale=0)
 
 ---
 
-# Shrinkage in action
+# 
 
 ```{r ts-summary, echo=TRUE}
 summary(dsm_ts_all)
@@ -308,8 +305,8 @@ saveGIF(plot_lambda_s(G, bestlambda), "images/shrinky_dink_select.gif", interval
 ```
 .pull-left[
 - `dsm(..., select=TRUE)` - extra penalty
-- no assumption of how much to shrink the nullspace
-- "no assumption" might not be such a good idea?
+- shrinks everything at the same time
+- what to shrink "first"? 
 ]
 .pull-right[
 ![animation of penalty in action](images/shrinky_dink_select.gif)
@@ -334,13 +331,11 @@ dsm_sel <- dsm(count~s(x, y) +
 
 ---
 
-# Extra penalty example
-
+# 
 
 ```{r select-summary, echo=TRUE}
 summary(dsm_sel)
 ```
-
 
 ---
 
@@ -447,25 +442,13 @@ AIC(dsm_ts_all)
 
 ---
 
-# A quick note about REML scores
-
-- Use REML to select the smoothness
-- Can also use the score to do model selection
-- **BUT** only compare models with the same fixed effects
-  - (i.e., same "linear terms" in the model)
-- $\Rightarrow$ **All terms** must be penalised
-  - `bs="ts"` or `select=TRUE`
-
-
----
-
 class: inverse, middle, center
 
 # Selecting between response distributions
 
 ---
 
-# Goodness of fit tests
+# Goodness of fit
 
 
 - Q-Q plots
@@ -480,6 +463,20 @@ qq.gam(dsm_all, asp=1, main="Tweedie", cex=5)
 qq.gam(dsm_x_nb, asp=1, main="Negative binomial", cex=5)
 ```
 
+---
+
+# Using reference bands
+
+```
+qq.gam(dsm_all, asp=1, main="Tweedie",
+       cex=5, rep=100)
+```
+
+```{r gof-qq-ref, fig.width=18}
+par(mfrow=c(1,2), cex.title=3, cex.axis=1.5, cex.lab=1.5, lwd=2)
+qq.gam(dsm_all, asp=1, main="Tweedie", cex=5, rep=100)
+qq.gam(dsm_x_nb, asp=1, main="Negative binomial", cex=5, rep=100)
+```
 
 ---
 
@@ -514,23 +511,6 @@ class: inverse, middle, center
 
 ---
 
-# Concurvity (model/smooth)
-
-
-```{r concurvity, echo=TRUE}
-concurvity(dsm_all)
-```
-
----
-
-# Concurvity between smooths
-
-```{r concurvity-all, echo=TRUE}
-concurvity(dsm_all, full=FALSE)$estimate
-```
-
----
-
 # Visualising concurvity between terms
 
 .pull-left[
@@ -540,7 +520,8 @@ vis.concurvity(dsm_ts_all)
 ]
 
 .pull-right[
-- Previous matrix output visualised
+- `vis.concurvity`
+- (Visualisation of `concurvity`)
 - High values (yellow) = BAD
 ]
 
@@ -580,7 +561,6 @@ class: inverse, middle, center
 
 
 - `s(Depth)` and `s(x, y)` are highly concurve (`r round(concurvity(dsm_ts_all, full=FALSE)$estimate[2,3],4)`)
-- Refit removing `Depth` first
 
 ```{r nodepth}
 dsm_no_depth <- dsm(count~s(x, y, bs="ts") +
@@ -673,7 +653,7 @@ kable(sens, format="html")
 ```
 
 - "Full" model still explains most deviance
-- No depth model requires spatial smooth to "mop up" extra variation
+- "No depth" model requires spatial smooth to "mop up" extra variation
 - We'll come back to this when we do prediction
 
 
