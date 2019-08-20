@@ -21,7 +21,7 @@ Th  1100 | [Survey design](lectures/BlockF-design.pdf)
 Th  1345 | [Analysis of Stratified Surveys](lectures/BlockG-stratification.pdf)
 Th  1545 | [Multiple covariate distance sampling (MCDS)](lectures/BlockH-covariates.pdf)
 Fri 0900 | [Multipliers and Indirect Methods](lectures/BlockI-multipliers.pdf)
-Fri 1345 | [Field methods](lectures/BlockJ-field-sampsize.pdf)
+Fri 1345 | [Field methods](lectures/BlockJ-field.pdf)
 
 
 
