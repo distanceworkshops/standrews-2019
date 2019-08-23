@@ -25,6 +25,8 @@ Number | Description | Markdown | PDF
 7 | Analysis of stratified data | [Rmd](practicals/Prac_7_Stratified_data.Rmd) | [PDF](practicals/Prac_7_Stratified_data.pdf)
 8 | Covariates in the detection function | [Rmd](practicals/Prac_8_mcds.Rmd) | [PDF](practicals/Prac_8_mcds.pdf)
 9 | Analysis with multipliers | [Rmd](practicals/Prac_9_multipliers.Rmd) | [PDF](practicals/Prac_9_multipliers.pdf)
+Demo | Group size covariate | [Rmd](practicals/group-size-demo.rmd) | [HTML] (practicals/group-size-demo.html)
+Demo | Export Distance for Windows data | [Rmd](practicals/readdst-tint.rmd) | [HTML](practicals/readdst-tint.html)
 
 ## Data sets
 
