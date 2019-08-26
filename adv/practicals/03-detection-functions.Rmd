@@ -205,7 +205,7 @@ The code below will make a results table with relevant statistics for model sele
 
 ```{r df-results}
 model_table <- summarize_ds_models(df_hn, df_hr_ss_size)
-kable(model_table, digits=3, format="latex", row.names = FALSE, escape=FALSE, 
+kable(model_table, digits=3, row.names = FALSE, escape=FALSE, 
       caption = "Comparison of half normal and hazard rate with sea state and group size.")
 ```
 
