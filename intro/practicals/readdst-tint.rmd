@@ -1,0 +1,169 @@
+---
+title: "Introductory distance sampling workshop"
+subtitle: "CREEM, Univ of St Andrews"
+author: "Demonstration of the readdst package"
+date: "`r Sys.Date()`"
+output: tint::tintHtml
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library(tint)
+# invalidate cache when the package version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tint'))
+options(htmltools.dir.version = FALSE)
+library(printr)
+```
+
+# Preface
+
+Now that you know how to analyse distance sampling data in `R`, what to do with the legacy data you have inside [Distance for Windows](http://distancesampling.org/Distance/index.html) projects? 
+
+Answer: convert the projects using [`readdst`](https://github.com/DistanceDevelopment/readdst).
+
+```{r fig2, echo=FALSE,  fig.width=3.5, fig.height=3.5, eval=FALSE}
+knitr::include_url("https://github.com/DistanceDevelopment/readdst", height = "400px")
+```
+
+
+
+# Package installation
+
+The package does not reside on CRAN, but can be downloaded from Github as you did for several of the packages used in this workshop:
+
+```{r, eval=FALSE}
+remotes::install_github("DistanceDevelopment/readdst")
+```
+
+One ideosyncracy for Windows users is that R-Studio must use the *32-bit version* of `R`.  Set that in the `Tools | Global Options | General` menu
+
+```{r fig3, fig.cap="Set R-Studio to use 32-bit version of R.", out.width="80%", echo=FALSE}
+knitr::include_graphics("32-bit.PNG")
+```
+
+On Windows platforms, you will also need the `RODBC` package that queries the Access-like database where Distance for Windows stores information.
+
+
+# Package use
+
+We demonstrate the syntax for the main functions within `readdst` by working with some of the datasets used during the workshop:
+
+- wren2 (snapshot method with point count)
+- wren3 (cue count)
+- wren4 (line transect)
+- amakihi (point count)
+- Sika deer pellets (multipliers)
+ 
+
+# The essential function `convert_project()`
+
+
+As the package name implies, the `.dst` file of a Distance for Windows project is the sole source of information needed by `readdst`.  The function `convert_project()` does what it says on the tin and the single argument necessary to use the function is the path to the location of the `.dst` file you wish to make available in R.  I'll demonstrate with the first of the projects mentioned above:
+
+```{r}
+library(readdst)
+wren.snap <- convert_project("P:\\distance.2019\\for-readdst\\Wren2\\D70Wren2")
+```
+There is a small complaint by `convert_project()` that we can ignore for the moment.  The question is, what has been accomplished by this call to the function?  Let's investigate the created object:
+
+```{r}
+class(wren.snap)
+```
+
+The `class` of the object tells us exactly what it contains.  Not only does the object contain distance sampling data, but also the analyses that may have been conducted and stored within the Distance for Windows project.  For our purposes, we'll not concern ourselves with the analyses, but concentrate upon finding where the data are located so we can conduct analyses of them from within the `R` environment.
+
+# Data in a converted project object
+
+Data actually may live in a number of locations within the created project. Data are stored in one "master" location, but are also stored along with each completed analysis in the Distance for Windows project.  Explore the structure of the object `wren.snap`:
+
+```{r}
+str(wren.snap, max.level = 1)
+```
+
+You'll see `- attr(*, "flatfile")='data.frame':	275 obs. of  10 variables:`, because it is a data frame with lots of rows, you might guess this would be the data, and you would be right.  Challenge is how to access it.
+
+```{r}
+head(attr(wren.snap, "flatfile"))
+```
+
+## Data reside elsewhere in the converted project object
+
+When looking at the structure of `wren.snap`, note the object is actually a list with a single element, named `New Analysis`.  Examine the structure of this list element
+
+```{r}
+str(wren.snap$`New Analysis`)
+# equivalently
+# str(wren.snap[["New Analysis"]])
+# equivalently
+# str(wren.snap[[1]])
+```
+
+Another data frame can be found in the `environment` of the `New Analysis` list element
+
+```{r}
+str(wren.snap[["New Analysis"]]$env$data)
+```
+
+Note however, this data frame is not identical to the data frame we discovered earlier:
+
+```{r}
+dim(attr(wren.snap, "flatfile"))[1]
+dim(wren.snap[["New Analysis"]]$env$data)[1]
+```
+
+The cause of the discrepency is because `wren.snap[["New Analysis"]]$env$data` is associated with a particular analysis in our project.  That analysis was of one species (wrens) in a multi-specie survey.  If you look harder at the `wren.snap[["New Analysis"]]` object, you will find the cause of the difference:
+
+```{r}
+wren.snap[["New Analysis"]]$filter
+```
+
+# Examples of other projects
+
+## Cue counts for wrens
+
+```{r}
+wren.cue <- convert_project("P:\\distance.2019\\for-readdst\\Wren3\\D70Wren3")
+head(wren.cue[["2"]]$data)
+```
+
+## Line transects for wrens
+
+```{r,fig.margin=TRUE}
+wren.lt <- convert_project("P:\\distance.2019\\for-readdst\\Wren4\\D70Wren4")
+hist(wren.lt[["New Analysis"]]$env$data$distance, main="Wren line transect")
+```
+
+## Sika deer pellets
+
+Quite a verbose analysis name in the Distance for Windows project.
+
+```{r, fig.margin=TRUE}
+pellets <- convert_project("P:\\distance.2019\\for-readdst\\Deer pellets solution\\D70new full sika")
+hist(pellets$`HNcos mult 10% trunc stratified encounter rate (wght effort)`$env$data$distance,
+     main="Sika pellets")
+```
+
+# Carrying out an analysis in R
+
+On the off chance you might wish to re-run an analysis you conducted in Distance for Windows, there is another function in `readdst` named `run_analysis()`.  Demonstrate with the amakihi data
+
+```{r, fig.margin=TRUE, warning=FALSE}
+amakihi <- convert_project("P:\\distance.2019\\for-readdst\\fTAMAUK07\\D70fTAMAUK07")
+hist(amakihi$`e5 - HR by strat w82.5`$env$data$distance)
+tmp <- run_analysis(amakihi$`e5 - HR by strat w82.5`)
+plot(tmp[[4]], pdf=TRUE, main="July 1993 survey")
+```
+
+## About the analyses stored in our object
+
+Don't expect the results of detection function fitting in R to exactly match the detection functions fitted by Distance for Windows.  The reasons for this are interesting only to the pathologically statistical; suffice it to say, there are different pieces of software doing the parameter estimation and there can be disagreements about the best fit, particularly for complex models.
+
+
+# Conclusion
+
+
+
+## More details
+
+You can download a PDF poster describing the workings of `readdst` in more detail [from our Github site](https://github.com/DistanceDevelopment/poster-isec2018/blob/master/2018poster.pdf)
