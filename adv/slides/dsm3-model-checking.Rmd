@@ -9,7 +9,7 @@ output:
       slideNumberFormat: ""
     seal: false
     lib_dir: libs
-    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_HTMLorMML"
 css: custom.css
 
 ---

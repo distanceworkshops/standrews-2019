@@ -9,7 +9,7 @@ output:
       slideNumberFormat: ""
     seal: false
     lib_dir: libs
-    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_HTMLorMML"
 css: custom.css
 
 ---
@@ -560,7 +560,7 @@ class: inverse, middle, center
 # Sensitivity example
 
 
-- `s(Depth)` and `s(x, y)` are highly concurve (`r round(concurvity(dsm_ts_all, full=FALSE)$estimate[2,3],4)`)
+- `s(Depth)` and `s(x, y)` are highly concurve (`r round(mgcv::concurvity(dsm_ts_all, full=FALSE)$estimate[2,3],4)`)
 
 ```{r nodepth}
 dsm_no_depth <- dsm(count~s(x, y, bs="ts") +
