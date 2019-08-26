@@ -26,6 +26,6 @@ Simulation of distance sampling                         |                       
 
 ## Additional stuff
 
-- [Cheatsheet on DSM tables and how they relate to each](slides/dsm_tables.png)
+- [Cheatsheet on DSM tables and how they relate to each other](slides/dsm_tables.png)
 - [Data format information](slides/Data_format_for_distance_sampling_workshops.pdf)
 - [Interpreting `mrds` output](slides/Interpreting_MRDS_output.pdf)
