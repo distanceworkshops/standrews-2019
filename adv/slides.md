@@ -29,3 +29,5 @@ Simulation of distance sampling                         |                       
 - [Cheatsheet on DSM tables and how they relate to each other](slides/dsm_tables.png)
 - [Data format information](slides/Data_format_for_distance_sampling_workshops.pdf)
 - [Interpreting `mrds` output](slides/Interpreting_MRDS_output.pdf)
+- [DSM paper by Miller et al. (2013)](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12105)
+- [Noam Ross' GAM course](https://noamross.github.io/gams-in-r-course/)
