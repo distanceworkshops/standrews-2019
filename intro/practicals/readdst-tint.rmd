@@ -20,10 +20,6 @@ library(printr)
 
 Now that you know how to analyse distance sampling data in `R`, what to do with the legacy data you have inside [Distance for Windows](http://distancesampling.org/Distance/index.html) projects? 
 
-```{r fig1, echo=FALSE,  fig.width=7, fig.height=3.5}
-knitr::include_url("http://distancesampling.org/Distance/index.html", height = "500px")
-```
-
 Answer: convert the projects using [`readdst`](https://github.com/DistanceDevelopment/readdst).
 
 ```{r fig2, echo=FALSE,  fig.width=3.5, fig.height=3.5, eval=FALSE}
