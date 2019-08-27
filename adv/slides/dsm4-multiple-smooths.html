@@ -411,11 +411,11 @@ length(dsm_sel$sp)
 
 ---
 
-# How do we select smooth terms?
+# Removing terms?
 
-1. Look at EDF
+1. EDF
   - Terms with EDF&lt;1 may not be useful (can we remove?)
-2. Remove non-significant terms by `\(p\)`-value
+2. non-significant `\(p\)`-value
   - Decide on a significance level and use that as a rule
 
 (In some sense leaving "shrunk" terms in is more "consistent" in terms of variance estimation, but can be computationally annoying)
@@ -440,22 +440,9 @@ class: inverse, middle, center
 
 ---
 
-# Nested vs. non-nested models
+# Measuring "fit"
 
-
-- Compare `~s(x)+s(depth)` with `~s(x)`
-  - nested models
-- What about `s(x) + s(y)` vs. `s(x, y)`
-  - don't want to have all these in the model
-  - not nested models
-
-
----
-
-# Measures of "fit"
-
-
-- Two listed in `summary`
+- Listed in `summary`
   - Deviance explained
   - Adjusted `\(R^2\)` (not useful)
 - Deviance is a generalisation of `\(R^2\)`
@@ -710,10 +697,7 @@ class: inverse, middle, center
 &lt;/table&gt;
 
 - "Full" model still explains most deviance
-- "No depth" model requires spatial smooth to "mop up" extra variation
 - We'll come back to this when we do prediction
-
-
 
 
 ---
@@ -722,7 +706,6 @@ class: inverse, middle, center
 # Recap
 
 ---
-
 
 # Recap
 

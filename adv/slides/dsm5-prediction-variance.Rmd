@@ -457,7 +457,7 @@ $$
   - assumes spatial model and detection function are independent
 - `dsm.var.prop`
   - propagates uncertainty from detection function to spatial model
-  - only works for `count` models (more or less)
+  - only works for `count` models
   
 
 ---
