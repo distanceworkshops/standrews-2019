@@ -26,6 +26,7 @@ This is the site for the Distance Sampling Workshops given in St Andrews, 19th -
 - Advanced Distance Sampling
   - [Slides](adv/slides.html)
   - [Practical session exercises and data](adv/practicals.html)
+  - [Bibliography](adv/bibliography.html)
 
 
 ## Schedule
