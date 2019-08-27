@@ -72,6 +72,10 @@ Estimation of sperm whale abundance in the North Atlantic by NOAA:
 * Strindberg, S., & Buckland, S. T. (2004). Zigzag survey designs in line transect sampling. Journal of Agricultural, Biological, and Environmental Statistics, 9(4), 443–461. http://doi.org/10.1198/108571104X15601
 * Thomas, L., & Williams, R. (2007). Designing line transect surveys for complex survey regions. Journal of Cetacean Research and Management 9(1):1–13.
 * Camphuysen, C.J., Fox, A.D., Leopold, M., Petersen, I.K., 2004. Towards standardized seabirds at sea census techniques in connection with environmental impact assessments for offshore wind farms. In: UK COWRIE 1 Report. Royal Netherlands Institute for Sea Research, Texel, Netherlands.
+- Small boat work for cetaceans
+  -[Animal Counting Toolkit : a practical guide to small-boat surveys for    estimating abundance of coastal marine mammals](https://research-repository.st-andrews.ac.uk/handle/10023/11430)
+  - [Design and field methods for sighting surveys of cetaceans in coastal and riverine habitats](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2907.2008.00119.x)
+  - [A Suite of Field Manuals for Marine Sampling to Monitor Australian Waters](https://www.frontiersin.org/articles/10.3389/fmars.2019.00177/full)
 
 ### Detection function formulations
 

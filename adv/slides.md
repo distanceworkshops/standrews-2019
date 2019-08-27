@@ -33,7 +33,3 @@ Simulation of distance sampling                         |                       
   - [Noam Ross' GAM course](https://noamross.github.io/gams-in-r-course/)
 - Mark-recpature distance sampling
   - [Interpreting `mrds` output](slides/Interpreting_MRDS_output.pdf)
-- Small boat work for cetaceans
-  -[Animal Counting Toolkit : a practical guide to small-boat surveys for estimating abundance of coastal marine mammals](https://research-repository.st-andrews.ac.uk/handle/10023/11430)
-  - [Design and field methods for sighting surveys of cetaceans in coastal and riverine habitats](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1365-2907.2008.00119.x)
-  - [A Suite of Field Manuals for Marine Sampling to Monitor Australian Waters](https://www.frontiersin.org/articles/10.3389/fmars.2019.00177/full)
