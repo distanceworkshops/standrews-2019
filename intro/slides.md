@@ -24,4 +24,6 @@ Fri 0900 | [Multipliers and Indirect Methods](lectures/BlockI-multipliers.pdf)
 Fri 1345 | [Field methods](lectures/BlockJ-field.pdf)
 
 
+## Additional materials
 
+- [Example of GPX export from R](WriteToGPXCode.R) by Laura Marshall
