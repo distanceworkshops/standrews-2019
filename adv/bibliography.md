@@ -47,19 +47,14 @@ Cannonical books and papers:
 * [Barry Rowlingson's R spatial cheatsheet](http://www.maths.lancs.ac.uk/~rowlings/Teaching/UseR2012/cheatsheet.html)
 * [James Cheshire's links on using R as a GIS](http://spatial.ly/r/)
 
-
-### Reproducable research
-
-* [Using RMarkdown to generate `docx` Word documents](http://rmarkdown.rstudio.com/articles_docx.html)
-
-### Advanced topics
-
-* Data analysis using a simple strategy: Wickham, H. (2011). The split-apply-combine strategy for data analysis. Journal of Statistical Software. [paper](http://www.jstatsoft.org/article/view/v040i01)
-* More technical guide to R: [Advanced R](http://adv-r.had.co.nz/)
-
-
-
 ## Landscape
+
+### Other methods for abundance estimation
+
+* [Link's 2003 paper "Nonidentifiability of Population Size from Capture‐Recapture Data with Heterogeneous Detection Probabilities"](https://onlinelibrary.wiley.com/doi/full/10.1111/j.0006-341X.2003.00129.x)
+* 2 papers on the deficiencies of N-mixture models:
+  - [On the robustness of N‐mixture models](https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecy.2362)
+  - [On the reliability of N‐mixture models for count data](https://onlinelibrary.wiley.com/doi/full/10.1111/biom.12734)
 
 ### Data
 
