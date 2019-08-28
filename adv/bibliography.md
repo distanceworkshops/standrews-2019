@@ -56,7 +56,7 @@ Cannonical books and papers:
   - [On the robustness of N‐mixture models](https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecy.2362)
   - [On the reliability of N‐mixture models for count data](https://onlinelibrary.wiley.com/doi/full/10.1111/biom.12734)
 
-### Data
+### The sperm whale data
 
 Estimation of sperm whale abundance in the North Atlantic by NOAA:
 
@@ -95,6 +95,8 @@ Estimation of sperm whale abundance in the North Atlantic by NOAA:
   * Glennie, R., Buckland, S. T., & Thomas, L. (2015). The Effect of Animal Movement on Line Transect Estimates of Abundance. PLoS ONE, 10(3), e0121333–15. http://doi.org/10.1371/journal.pone.0121333
 * Overlapping transects
   * Buckland, ST 2006, 'Point transect surveys for songbirds: robust methodologies' The Auk, vol. 123, no. 2, pp. 345-357. https://doi.org/10.1642/0004-8038(2006)123[345:PSFSRM]2.0.CO;2
+* Camera traps
+  * Howe, E. J., Buckland, S. T., Després‐Einspenner, M. and Kühl, H. S. (2017), Distance sampling with camera traps. Methods Ecol Evol, 8: 1558-1565. doi:10.1111/2041-210X.12790
 
 ## Advanced distance sampling
 
@@ -161,8 +163,6 @@ Cannonical reference is Wood (2006)
   * Foster, S. D., & Bravington, M. V. (2012). A Poisson–Gamma model for analysis of ecological non-negative continuous data. Environmental and Ecological Statistics, 20(4), 533–552. http://doi.org/10.1007/s10651-012-0233-0
 * Comparison of negative binomial and quasi-Poisson
   * Ver Hoef, J. M., & Boveng, P. L. (2007). Quasi-Poisson vs. negative binomial regression: how should we model overdispersed count data? Ecology, 88(11), 2766–2772. http://doi.org/10.2307/25590942
-* Regarding negative binomial and the "quadratic assumption" in the variance. This is from "Zero-inflated models and generalized linear mixed models with R" by Zuur et al p. 78-79:
-  * *"We applied a Poisson GLM and GAM on the data and discovered overdispersion; therefore we applied NB GLM and GAM models. These were better, and the NB GAM seems satisfactory but the estimated value of k in the NB variance term is relatively small, meaning that the model is allowing for variance. In other words, the large overdispersion in the Poisson GLM (and GAM) is being captured by the quadratic variance term in the NB distribution. That is like shooting a mosquito with a cannon. It does the job if it kills the mosquito, but do we really need it? Perhaps there is a reason for the overdispersion, and hiding it behind a quadratic variance component may mean that we miss some important information. In the simulation study of chapter 2, we saw that if the data are zero-inflated, which can cause overdispersion, an NB GLM will give biased parameters."*
 
 
 ### Smooths
@@ -176,13 +176,14 @@ Cannonical reference is Wood (2006)
 * Practical advice in `mgcv` `?choose.k` manual page
 
 
-### Checking
+### Checking and validation
 
 - Paper on randomised quantile residuals
   - Dunn, P. K., & Smyth, G. K. (1996). Randomized quantile residuals. Journal of Computational and Graphical Statistics, 5(3), 236–244. http://doi.org/10.1080/10618600.1996.10474708
 - Spatial model checking plots using deviance residuals ([preprint](http://converged.yt/papers/SPMMZ.pdf))
   * Marra, G., Miller, D. L., & Zanin, L. (2011). Modelling the spatiotemporal distribution of the incidence of resident foreign population. Statistica Neerlandica, 66(2), 133–160. http://doi.org/10.1111/j.1467-9574.2011.00500.x
-
+- Validating spatial models
+  * [Assessing transferability of ecological models: an underappreciated aspect of statistical validation](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.2041-210X.2011.00170.x)
 
 
 ## Covariates
