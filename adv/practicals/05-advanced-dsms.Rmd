@@ -17,7 +17,7 @@ By the end of this practical, you should feel comfortable:
 - Fitting DSMs with multiple smooth terms in them
 - Selecting smooth terms by $p$-values
 - Using shrinkage smoothers
-- Selecting between models using deviance, AIC, REML score
+- Selecting between models using deviance and AIC
 - Investigating concurvity in DSMs with multiple smooths
 - Investigating sensitivity sensitivity and path dependence
 
@@ -53,7 +53,7 @@ We can do some exploratory analysis by aggregating the counts to each cell and p
 # join the observations onto the segments
 join_dat <- join(segs, obs, by="Sample.Label", type="full")
 # sum up the observations per segment
-n <- ddply(join_dat, .(Sample.Label), summarise, n=sum(size), .drop = FALSE) 
+n <- ddply(join_dat, .(Sample.Label), summarise, n=sum(size, na.rm=TRUE), .drop = FALSE) 
 # sort the segments by their labsl
 segs_eda <- segs[sort(segs$Sample.Label),]
 # make a new column for the counts
@@ -259,7 +259,6 @@ summarize_dsm <- function(model){
   data.frame(response = model$family$family,
              terms    = paste(rownames(summ$s.table), collapse=", "),
              AIC      = AIC(model),
-             REML     = model$gcv.ubre,
              "Deviance_explained" = paste0(round(summ$dev.expl*100,2),"%")
             )
 }
@@ -276,7 +275,7 @@ row.names(summary_table) <- c("dsm_nb_x_y_ms", "dsm_nb_xy_ms")
 ```
 
 ```{r print-table-03, results="asis"}
-summary_table <- summary_table[order(summary_table$REML, decreasing=TRUE),]
+summary_table <- summary_table[order(summary_table$AIC, decreasing=TRUE),]
 kable(summary_table, 
       caption = "Model performance of s(x,y) and s(x)+s(y) in presence of other covariates.")
 ```

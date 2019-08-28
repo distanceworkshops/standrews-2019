@@ -45,7 +45,7 @@ We can do some exploratory analysis by aggregating the counts to each cell and p
 # join the observations onto the segments
 join_dat <- join(segs, obs, by="Sample.Label", type="full")
 # sum up the observations per segment
-n <- ddply(join_dat, .(Sample.Label), summarise, n=sum(size), .drop = FALSE) 
+n <- ddply(join_dat, .(Sample.Label), summarise, n=sum(size, na.rm=TRUE), .drop = FALSE) 
 # sort the segments by their labsl
 segs_eda <- segs[sort(segs$Sample.Label),]
 # make a new column for the counts
@@ -146,7 +146,11 @@ Notes:
 
 1. Setting `shade=TRUE` gives prettier confidence bands (by default `shade=FALSE`).
 2. As with `vis.gam()` the response is on the link scale.
-3. `scale=0` puts each plot on a different $y$-axis scale, making it easier to see the effects. Setting `scale=-1` will put the plots on a common $y$-axis scale
+3. `scale=0` puts each plot on a different $y$-axis scale, making it easier to see the effects. Setting `scale=-1` will put the plots on a common $y$-axis scale so you can see the relative influence of the effects, as shown below.
+
+```{r plot-nb-xy-scale}
+plot(dsm_nb_xy_ms, pages=1, scale=-1)
+```
 
 We can also plot the bivariate smooth of `x` and `y` as we did before, using `vis.gam()`:
 ```{r nb-xy-visgam, fig.width=5, fig.height=5}
@@ -328,11 +332,11 @@ These plots look okay and don't show any major issues. Let's compare the Q-Q plo
 
 ```{r tw-nb-qq-comp, fig.width=10, fig.height=5}
 par(mfrow=c(1,2))
-qq.gam(dsm_nb_xy_ms, main="Negative binomial")
-qq.gam(dsm_tw_xy_ms, main="Tweedie")
+qq.gam(dsm_nb_xy_ms, main="Negative binomial", rep=200)
+qq.gam(dsm_tw_xy_ms, main="Tweedie", rep=200)
 ```
 
-It looks like the negative binomial model has a better Q-Q plot here, so we're inclined to pick that model.
+There's not much between these two (all points inside the reference bands). I might be inclined to pick the negative binomial model as the points are slightly closer to the line in the Q-Q plot here.
 </div>
 
 # Estimated abundance as a response
@@ -378,8 +382,8 @@ Now quickly plotting the Q-Q plots to compare Tweedie and negative binomial mode
 
 ```{r ae-tw-nb-qq-comp, fig.width=10, fig.height=5}
 par(mfrow=c(1,2))
-qq.gam(dsm_nb_xy_ms_ae, main="Negative binomial")
-qq.gam(dsm_tw_xy_ms_ae, main="Tweedie")
+qq.gam(dsm_nb_xy_ms_ae, main="Negative binomial", rep=200)
+qq.gam(dsm_tw_xy_ms_ae, main="Tweedie", rep=200)
 ```
 
 This is a close call, neither distribution appears to perform considerably better than the other in Q-Q plot terms. We might prefer the Tweedie model as there is a smaller distance between point and line at larger values.
@@ -542,7 +546,6 @@ summarize_dsm <- function(model){
   data.frame(response = model$family$family,
              terms    = paste(rownames(summ$s.table), collapse=", "),
              AIC      = AIC(model),
-             REML     = model$gcv.ubre,
              "Deviance_explained" = paste0(round(summ$dev.expl*100,2),"%")
             )
 
@@ -563,7 +566,7 @@ row.names(summary_table) <- c("dsm_nb_xy", "dsm_nb_x_y_ms", "dsm_tw_xy_ms", "dsm
 </div>
 
 ```{r print-table, results="asis"}
-summary_table <- summary_table[order(summary_table$REML, decreasing=TRUE),]
+summary_table <- summary_table[order(summary_table$AIC, decreasing=TRUE),]
 kable(summary_table)
 ```
 
@@ -572,10 +575,10 @@ We can also plot the Q-Q plots for these models to compare their distributional 
 
 ```{r big-qq-compare, fig.width=9, fig.height=9}
 par(mfrow=c(2,2))
-qq.gam(dsm_nb_xy_ms, main="Negative binomial, s(x,y)")
-qq.gam(dsm_tw_xy_ms, main="Tweedie, s(x,y)")
-qq.gam(dsm_nb_x_y_ms, main="Negative binomial, s(x)+s(y)")
-qq.gam(dsm_tw_x_y_ms, main="Tweedie, s(x)+s(y)")
+qq.gam(dsm_nb_xy_ms, main="Negative binomial, s(x,y)", rep=200)
+qq.gam(dsm_tw_xy_ms, main="Tweedie, s(x,y)", rep=200)
+qq.gam(dsm_nb_x_y_ms, main="Negative binomial, s(x)+s(y)", rep=200)
+qq.gam(dsm_tw_x_y_ms, main="Tweedie, s(x)+s(y)", rep=200)
 ```
 
 We'll save all four models below, but our selection were based on the deviance explained and the Q-Q plot would be for `dsm_nb_xy_ms`.
