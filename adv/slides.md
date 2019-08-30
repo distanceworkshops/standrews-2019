@@ -33,3 +33,6 @@ Simulation of distance sampling                         |                       
   - [Noam Ross' GAM course](https://noamross.github.io/gams-in-r-course/)
 - Mark-recpature distance sampling
   - [Interpreting `mrds` output](slides/Interpreting_MRDS_output.pdf)
+- Segmenting
+  - [data for the segments](All_Waypoints_2003_Converted_RMR2018.csv) with start and end points
+  - [segmenting.R](segmenting.R) some example code
