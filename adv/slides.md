@@ -36,3 +36,7 @@ Simulation of distance sampling                         |                       
 - Segmenting
   - [data for the segments](All_Waypoints_2003_Converted_RMR2018.csv) with start and end points
   - [segmenting.R](segmenting.R) some example code
+- Research talks
+  - [Multi-analysis distance sampling](mads.pdf) by Laura Marshall
+  - [Acoustics](acoustics.pdf) by Danielle Harris
+  - [Movement](movement.pdf) by Richard Glennie
