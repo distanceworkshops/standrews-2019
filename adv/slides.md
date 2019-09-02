@@ -40,3 +40,4 @@ Simulation of distance sampling                         |                       
   - [Multi-analysis distance sampling](mads.pdf) by Laura Marshall
   - [Acoustics](acoustics.pdf) by Danielle Harris
   - [Movement](movement.pdf) by Richard Glennie
+  - [Availability](availability.pdf) by David Borchers
