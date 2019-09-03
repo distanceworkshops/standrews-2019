@@ -6,6 +6,9 @@ layout: index
 
 # Distance Sampling Workshops 2019
 
+
+![Advanced workshops participants](AdvancedDS_photo2.jpg)
+
 This is the site for the Distance Sampling Workshops given in St Andrews, 19th - 30th August, 2019. The course is in three parts:
 
 
